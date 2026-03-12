@@ -1336,10 +1336,7 @@ function enviar(){
   // ── REEMPLAZA ESTA URL ──
   const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbwhOFA2rCCpmE-AT8NoVHERfZWUSa-fTGkNZtMqRbMMAxlhuRTiwBSZQ4-rAeCNvG4CJw/exec';
 
-  if(APPS_SCRIPT_URL==='https://script.google.com/macros/s/AKfycbwhOFA2rCCpmE-AT8NoVHERfZWUSa-fTGkNZtMqRbMMAxlhuRTiwBSZQ4-rAeCNvG4CJw/exec'){
-    setTimeout(()=>mostrarExito(),1400);
-    return;
-  }
+  
 
   fetch(APPS_SCRIPT_URL,{
     method:'POST',mode:'no-cors',
