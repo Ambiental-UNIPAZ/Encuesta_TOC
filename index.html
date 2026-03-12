@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuesta Egresados TOC · UNIPAZ</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5f2ed;--surface:#fffefb;--surface2:#f7f4ee;
+  --border:#e4dfd6;--accent:#7c9e87;--accent2:#b5927a;
+  --accent3:#8a9bbf;--text:#2d2a26;--muted:#8c8479;
+  --error:#c0614a;--success:#5a8f6e;--warn:#c49a40;
+  --r:14px;--sh:0 2px 18px rgba(100,88,72,.09);
+  --sh2:0 6px 36px rgba(100,88,72,.13);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);background-image:radial-gradient(ellipse 60% 40% at 10% 0,rgba(124,158,135,.11) 0,transparent 65%),radial-gradient(ellipse 40% 30% at 90% 100%,rgba(181,146,122,.09) 0,transparent 60%);font-family:'Nunito',sans-serif;color:var(--text);min-height:100vh;padding:32px 16px 80px}
+.wrap{max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+
+/* Header */
+.hdr{background:var(--surface);border-radius:20px;box-shadow:var(--sh2);border:1px solid var(--border);overflow:hidden;animation:fu .5s ease both}
+.hdr-stripe{height:5px;background:linear-gradient(90deg,var(--accent),var(--accent3),var(--accent2))}
+.hdr-body{padding:32px 36px 28px}
+.logo-row{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.logo-box{width:68px;height:68px;border-radius:12px;background:var(--surface2);border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;gap:3px;flex-shrink:0}
+.logo-box svg{opacity:.35}
+.inst-name{font-family:'Playfair Display',serif;font-size:12px;font-weight:600;color:var(--accent);letter-spacing:.05em;text-transform:uppercase}
+.inst-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+h1{font-family:'Playfair Display',serif;font-size:clamp(18px,4vw,24px);font-weight:700;line-height:1.25;color:var(--text);margin-bottom:12px}
+.desc{font-size:13.5px;line-height:1.75;color:var(--muted)}
+.conf{margin-top:16px;background:var(--surface2);border-left:3px solid var(--accent3);border-radius:0 8px 8px 0;padding:12px 16px;font-size:12px;line-height:1.7;color:var(--muted)}
+.conf strong{color:var(--text);font-weight:600}
+
+/* Progress wizard */
+.prog-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 24px;box-shadow:var(--sh);animation:fu .4s .08s ease both}
+.prog-steps{display:flex;align-items:center;gap:0;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
+.prog-steps::-webkit-scrollbar{height:3px}
+.prog-steps::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+.step-dot{display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0}
+.step-num{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--muted);transition:all .25s}
+.step-dot.active .step-num{border-color:var(--accent);background:var(--accent);color:#fff}
+.step-dot.done .step-num{border-color:var(--success);background:var(--success);color:#fff}
+.step-lbl{font-size:9px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);white-space:nowrap;max-width:56px;text-align:center;line-height:1.3}
+.step-dot.active .step-lbl{color:var(--accent)}
+.step-line{flex:1;height:2px;background:var(--border);margin:0 4px;margin-bottom:16px;min-width:16px;transition:background .25s}
+.step-line.done{background:var(--success)}
+.prog-bar{height:5px;background:var(--border);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent3));border-radius:99px;transition:width .4s ease}
+.prog-info{display:flex;justify-content:space-between;margin-top:6px;font-size:11.5px;color:var(--muted);font-weight:600}
+
+/* Section container */
+.section{display:none;animation:fu .35s ease both}
+.section.active{display:block}
+.sec-header{margin-bottom:20px}
+.sec-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);background:rgba(124,158,135,.1);border:1px solid rgba(124,158,135,.25);padding:3px 11px;border-radius:99px;margin-bottom:8px}
+.sec-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;color:var(--text)}
+
+/* Cards */
+.qcard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px 26px;box-shadow:var(--sh);margin-bottom:14px;transition:border-color .2s}
+.qcard:focus-within{border-color:var(--accent3)}
+.qlabel{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:12px;line-height:1.5;display:flex;gap:5px;flex-wrap:wrap}
+.qnum{color:var(--accent2);font-weight:700}
+.req{color:var(--error);font-weight:700;margin-left:1px}
+.qhint{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.5}
+
+/* Inputs */
+.qi{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-size:14px;padding:12px 15px;outline:none;transition:border-color .2s,box-shadow .2s}
+.qi:focus{border-color:var(--accent3);box-shadow:0 0 0 3px rgba(138,155,191,.13)}
+.qi::placeholder{color:#bbb5aa}
+textarea.qi{resize:vertical;min-height:90px}
+
+/* Select */
+.selwrap{position:relative}
+.selwrap::after{content:'▾';position:absolute;right:13px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none;font-size:12px}
+.qsel{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:'Nunito',sans-serif;font-size:14px;padding:12px 38px 12px 14px;appearance:none;-webkit-appearance:none;outline:none;cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.qsel:focus{border-color:var(--accent3);box-shadow:0 0 0 3px rgba(138,155,191,.13)}
+.qsel:disabled{opacity:.45;cursor:not-allowed}
+.qsel option{background:#fffefb}
+
+/* Options */
+.opts{display:flex;flex-direction:column;gap:7px}
+.opt{display:flex;align-items:center;gap:11px;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .13s;background:var(--surface2);user-select:none}
+.opt:hover{border-color:var(--accent3);background:rgba(138,155,191,.06)}
+.opt.chk{border-color:var(--accent);background:rgba(124,158,135,.07)}
+.opt input[type=radio],.opt input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;cursor:pointer}
+.opt-txt{font-size:13.5px;color:var(--text);flex:1}
+.otro-in{flex:1;background:transparent;border:none;border-bottom:1.5px solid var(--border);outline:none;font-family:'Nunito',sans-serif;font-size:13px;color:var(--text);padding:2px 4px}
+.otro-in:focus{border-color:var(--accent3)}
+
+/* Municipio chips */
+.mun-search-wrap{margin-bottom:10px}
+.mun-grid{display:flex;flex-wrap:wrap;gap:6px;max-height:200px;overflow-y:auto;padding:2px}
+.mun-grid::-webkit-scrollbar{width:4px}
+.mun-grid::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+.mun-chip{background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;color:var(--muted);font-family:'Nunito',sans-serif;font-size:12px;padding:5px 12px;cursor:pointer;transition:all .13s;white-space:nowrap}
+.mun-chip:hover{border-color:var(--accent);color:var(--text);background:rgba(124,158,135,.07)}
+.mun-chip.active{background:rgba(124,158,135,.13);border-color:var(--accent);color:var(--accent);font-weight:700}
+.mun-tag{display:none;align-items:center;gap:7px;margin-top:8px;background:rgba(90,143,110,.09);border:1px solid rgba(90,143,110,.28);border-radius:8px;padding:9px 13px;font-size:12.5px;color:var(--success)}
+.mun-tag.show{display:flex}
+.mun-tag strong{color:var(--text)}
+
+/* Likert table */
+.likert-wrap{overflow-x:auto}
+.likert-tbl{width:100%;border-collapse:collapse;min-width:340px}
+.likert-tbl th{font-size:12px;font-weight:700;color:var(--muted);padding:6px 10px;text-align:center;border-bottom:1px solid var(--border)}
+.likert-tbl th:first-child{text-align:left;min-width:180px}
+.likert-tbl td{padding:8px 10px;border-bottom:1px solid rgba(228,223,214,.5);font-size:12.5px;vertical-align:middle}
+.likert-tbl td:first-child{color:var(--text);line-height:1.4}
+.likert-tbl td:not(:first-child){text-align:center}
+.likert-tbl tr:last-child td{border:none}
+.likert-tbl tr:hover td{background:rgba(124,158,135,.04)}
+.likert-tbl input[type=radio]{accent-color:var(--accent);width:15px;height:15px;cursor:pointer}
+
+/* Error */
+.qerr{display:none;font-size:11.5px;color:var(--error);margin-top:6px;font-weight:600}
+.qerr.show{display:block}
+
+/* Divider */
+.sec-div{border:none;border-top:1px solid var(--border);margin:6px 0 18px}
+
+/* Nav buttons */
+.nav-row{display:flex;gap:12px;margin-top:6px}
+.btn-back{flex:1;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);color:var(--muted);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;padding:14px;cursor:pointer;transition:all .15s}
+.btn-back:hover{border-color:var(--accent2);color:var(--text)}
+.btn-next{flex:2;background:linear-gradient(135deg,var(--accent),#5a8a68);border:none;border-radius:var(--r);color:#fff;font-family:'Playfair Display',serif;font-size:15px;font-weight:600;padding:15px;cursor:pointer;transition:all .15s;box-shadow:0 4px 18px rgba(124,158,135,.3);letter-spacing:.02em}
+.btn-next:hover{opacity:.92;transform:translateY(-1px);box-shadow:0 7px 24px rgba(124,158,135,.38)}
+.btn-next:active{transform:translateY(0)}
+.spinner{display:none;width:17px;height:17px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+
+/* Success */
+.success-panel{display:none;background:var(--surface);border:1px solid rgba(90,143,110,.28);border-radius:20px;padding:44px 36px;text-align:center;box-shadow:var(--sh2);animation:fu .5s ease both}
+.success-panel.show{display:block}
+.ok-icon{width:60px;height:60px;background:rgba(90,143,110,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:26px}
+.success-panel h2{font-family:'Playfair Display',serif;font-size:21px;color:var(--text);margin-bottom:10px}
+.success-panel p{font-size:13.5px;color:var(--muted);line-height:1.7}
+
+/* Conditional notice */
+.cond-notice{background:rgba(196,154,64,.09);border:1px solid rgba(196,154,64,.3);border-radius:9px;padding:10px 14px;font-size:12px;color:var(--warn);margin-top:10px;display:none}
+.cond-notice.show{display:block}
+
+@keyframes fu{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:580px){.hdr-body{padding:24px 20px 22px}.qcard{padding:18px 16px}.nav-row{flex-direction:column}.btn-back{flex:none}.btn-next{flex:none}}
+</style>
+</head>
+<body>
+<div class="wrap" id="main-wrap">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-stripe"></div>
+  <div class="hdr-body">
+    <div class="logo-row">
+      <div class="logo-box">
+        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <span>Logo<br>EIAyS</span>
+      </div>
+      <div>
+        <div class="inst-name">Escuela de Ingeniería Ambiental y Saneamiento</div>
+        <div class="inst-sub">UNIPAZ · Instituto Universitario de la Paz · Programa TOC</div>
+      </div>
+    </div>
+    <h1>Encuesta Estudio de Impacto de Egresados TOC</h1>
+    <p class="desc">Estimado/a Egresado/a, le extendemos una cordial invitación a participar en esta encuesta diseñada para evaluar el impacto del programa de <strong>Tecnología en Obras Civiles</strong> en su desarrollo profesional y la pertinencia de nuestra formación académica. Su opinión es invaluable y nos ayudará en el proceso de Autoevaluación para la Acreditación en Alta Calidad.</p>
+    <div class="conf"><strong>Acuerdo de confidencialidad:</strong> Con el ingreso al formulario, usted autoriza que la información recolectada sea utilizada para fines académicos, de mejoramiento institucional y orientación de políticas institucionales, obligando a UNIPAZ a mantener la confidencialidad de los datos suministrados de acuerdo a la normatividad vigente, incluida la <strong>Ley 1581 de 2012</strong> para la protección de la información. <em>* Indica que la pregunta es obligatoria</em></div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-steps" id="prog-steps"></div>
+  <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="prog-info"><span id="prog-sec-label">Sección 1 de 7</span><span id="prog-pct">0%</span></div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECCIÓN 1 — DATOS PERSONALES
+═══════════════════════════════════════════ -->
+<div class="section active" id="sec-1">
+  <div class="sec-header">
+    <div class="sec-badge">📋 Sección 1 de 7</div>
+    <div class="sec-title">Datos Personales</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel">Correo electrónico <span class="req">*</span></div>
+    <input class="qi" type="email" id="q-correo" placeholder="ejemplo@correo.com">
+    <div class="qerr" id="e-correo">Ingresa un correo electrónico válido.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">1.</span> Nombres y apellidos <span class="req">*</span></div>
+    <input class="qi" type="text" id="q-nombre" placeholder="Nombre completo">
+    <div class="qerr" id="e-nombre">Este campo es obligatorio.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">2.</span> Número de teléfono <span class="req">*</span></div>
+    <input class="qi" type="tel" id="q-tel" placeholder="Ej: 3001234567">
+    <div class="qerr" id="e-tel">Este campo es obligatorio.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">3.</span> ¿Cuál es su rango de edad? <span class="req">*</span></div>
+    <div class="opts" id="q-edad">
+      <label class="opt" onclick="selRad(this,'q-edad')"><input type="radio" name="edad" value="Menos de 25 años"><span class="opt-txt">Menos de 25 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-edad')"><input type="radio" name="edad" value="Entre 25 y 34 años"><span class="opt-txt">Entre 25 y 34 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-edad')"><input type="radio" name="edad" value="Entre 35 y 44 años"><span class="opt-txt">Entre 35 y 44 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-edad')"><input type="radio" name="edad" value="Entre 45 y 54 años"><span class="opt-txt">Entre 45 y 54 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-edad')"><input type="radio" name="edad" value="Mayor que 55 años"><span class="opt-txt">Mayor que 55 años</span></label>
+    </div>
+    <div class="qerr" id="e-edad">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">4.</span> ¿Cuál es su género? <span class="req">*</span></div>
+    <div class="opts" id="q-genero">
+      <label class="opt" onclick="selRad(this,'q-genero')"><input type="radio" name="genero" value="Masculino"><span class="opt-txt">Masculino</span></label>
+      <label class="opt" onclick="selRad(this,'q-genero')"><input type="radio" name="genero" value="Femenino"><span class="opt-txt">Femenino</span></label>
+      <label class="opt" onclick="selRad(this,'q-genero')"><input type="radio" name="genero" value="No binario"><span class="opt-txt">No binario</span></label>
+      <label class="opt" onclick="selRad(this,'q-genero')"><input type="radio" name="genero" value="Otro"><span class="opt-txt">Otro: <input class="otro-in" type="text" id="genero-otro" placeholder="especifica..." onclick="event.stopPropagation()"></span></label>
+    </div>
+    <div class="qerr" id="e-genero">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">5.</span> De acuerdo con su cultura, pueblo o rasgos físicos, ¿usted es o se reconoce? <span class="req">*</span></div>
+    <div class="opts" id="q-etnia">
+      <label class="opt" onclick="selRad(this,'q-etnia')"><input type="radio" name="etnia" value="Mestizo"><span class="opt-txt">Mestizo</span></label>
+      <label class="opt" onclick="selRad(this,'q-etnia')"><input type="radio" name="etnia" value="Indígena"><span class="opt-txt">Indígena</span></label>
+      <label class="opt" onclick="selRad(this,'q-etnia')"><input type="radio" name="etnia" value="Raizal del archipiélago de San Andrés y Providencia"><span class="opt-txt">Raizal del archipiélago de San Andrés y Providencia</span></label>
+      <label class="opt" onclick="selRad(this,'q-etnia')"><input type="radio" name="etnia" value="Palenquero"><span class="opt-txt">Palenquero</span></label>
+      <label class="opt" onclick="selRad(this,'q-etnia')"><input type="radio" name="etnia" value="Negro, mulato, afrocolombiano o afrodescendiente"><span class="opt-txt">Negro, mulato, afrocolombiano o afrodescendiente</span></label>
+      <label class="opt" onclick="selRad(this,'q-etnia')"><input type="radio" name="etnia" value="Ninguno"><span class="opt-txt">Ninguno</span></label>
+    </div>
+    <div class="qerr" id="e-etnia">Selecciona una opción.</div>
+  </div>
+
+  <div class="nav-row"><button class="btn-next" onclick="nextSec(1)">Continuar →</button></div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECCIÓN 2 — UBICACIÓN
+═══════════════════════════════════════════ -->
+<div class="section" id="sec-2">
+  <div class="sec-header">
+    <div class="sec-badge">📍 Sección 2 de 7</div>
+    <div class="sec-title">Información de Ubicación</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">6.</span> ¿En qué país reside actualmente? <span class="req">*</span></div>
+    <div class="opts" id="q-pais">
+      <label class="opt" onclick="selRad(this,'q-pais');toggleDepto('Colombia')"><input type="radio" name="pais" value="Colombia"><span class="opt-txt">Colombia</span></label>
+      <label class="opt" onclick="selRad(this,'q-pais');toggleDepto('Otro')"><input type="radio" name="pais" value="Otro"><span class="opt-txt">Otro: <input class="otro-in" type="text" id="pais-otro" placeholder="especifica..." onclick="event.stopPropagation()"></span></label>
+    </div>
+    <div class="qerr" id="e-pais">Selecciona una opción.</div>
+  </div>
+
+  <div id="bloque-depto" style="display:none">
+    <div class="qcard">
+      <div class="qlabel"><span class="qnum">7.</span> ¿En qué departamento reside actualmente? <span class="req">*</span></div>
+      <div class="selwrap">
+        <select class="qsel" id="q-depto" onchange="cargarMunicipios('q-depto','q-municipio-grid','q-municipio-search','q-municipio-tag','q-municipio-tag-nombre','bloque-municipio','munSelResidencia')">
+          <option value="">— Selecciona un departamento —</option>
+        </select>
+      </div>
+      <div class="qerr" id="e-depto">Selecciona un departamento.</div>
+    </div>
+
+    <div class="qcard" id="bloque-municipio" style="display:none">
+      <div class="qlabel"><span class="qnum">8.</span> ¿En qué ciudad o municipio reside actualmente? <span class="req">*</span></div>
+      <input class="qi mun-search-wrap" type="text" id="q-municipio-search" placeholder="🔍 Buscar municipio..." oninput="filtrarMun('q-municipio-search','q-municipio-grid','munSelResidencia',munListaResidencia)">
+      <div class="mun-grid" id="q-municipio-grid"></div>
+      <div class="mun-tag" id="q-municipio-tag">✓ Seleccionado: <strong id="q-municipio-tag-nombre"></strong></div>
+      <p class="qhint">Toca el municipio para seleccionarlo.</p>
+      <div class="qerr" id="e-municipio">Selecciona un municipio.</div>
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">9.</span> Año de graduación <span class="req">*</span></div>
+    <p class="qhint" style="margin-bottom:10px">Ejemplo: 7 de enero del 2019</p>
+    <input class="qi" type="text" id="q-anio" placeholder="Ej: 2019">
+    <div class="qerr" id="e-anio">Ingresa tu año de graduación.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">10.</span> ¿Domina otro idioma? <span class="req">*</span></div>
+    <div class="opts" id="q-idioma">
+      <label class="opt" onclick="selRad(this,'q-idioma');toggleIdioma('Si')"><input type="radio" name="idioma" value="Sí"><span class="opt-txt">Sí</span></label>
+      <label class="opt" onclick="selRad(this,'q-idioma');toggleIdioma('No')"><input type="radio" name="idioma" value="No"><span class="opt-txt">No</span></label>
+    </div>
+    <div class="qerr" id="e-idioma">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard" id="bloque-idioma" style="display:none">
+    <div class="qlabel"><span class="qnum">11.</span> Si la respuesta anterior es afirmativa, indique el idioma que domina:</div>
+    <div class="opts" id="q-cual-idioma">
+      <label class="opt" onclick="selRad(this,'q-cual-idioma')"><input type="radio" name="cual-idioma" value="Inglés"><span class="opt-txt">Inglés</span></label>
+      <label class="opt" onclick="selRad(this,'q-cual-idioma')"><input type="radio" name="cual-idioma" value="Francés"><span class="opt-txt">Francés</span></label>
+      <label class="opt" onclick="selRad(this,'q-cual-idioma')"><input type="radio" name="cual-idioma" value="Portugués"><span class="opt-txt">Portugués</span></label>
+      <label class="opt" onclick="selRad(this,'q-cual-idioma')"><input type="radio" name="cual-idioma" value="Italiano"><span class="opt-txt">Italiano</span></label>
+      <label class="opt" onclick="selRad(this,'q-cual-idioma')"><input type="radio" name="cual-idioma" value="Mandarín"><span class="opt-txt">Mandarín</span></label>
+      <label class="opt" onclick="selRad(this,'q-cual-idioma')"><input type="radio" name="cual-idioma" value="Otro"><span class="opt-txt">Otro: <input class="otro-in" type="text" id="idioma-otro" placeholder="especifica..." onclick="event.stopPropagation()"></span></label>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-back" onclick="prevSec(2)">← Anterior</button>
+    <button class="btn-next" onclick="nextSec(2)">Continuar →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECCIÓN 3 — FORMACIÓN ACADÉMICA PREVIA
+═══════════════════════════════════════════ -->
+<div class="section" id="sec-3">
+  <div class="sec-header">
+    <div class="sec-badge">🎓 Sección 3 de 7</div>
+    <div class="sec-title">Formación Académica Previa</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">12.</span> ¿A qué edad concluyó sus estudios de bachillerato? <span class="req">*</span></div>
+    <div class="opts" id="q-edad-bach">
+      <label class="opt" onclick="selRad(this,'q-edad-bach')"><input type="radio" name="edad-bach" value="Menos de 18 años"><span class="opt-txt">Menos de 18 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-edad-bach')"><input type="radio" name="edad-bach" value="Entre 18 y 24 años"><span class="opt-txt">Entre 18 y 24 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-edad-bach')"><input type="radio" name="edad-bach" value="Entre 25 y 31 años"><span class="opt-txt">Entre 25 y 31 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-edad-bach')"><input type="radio" name="edad-bach" value="Entre 32 y 38 años"><span class="opt-txt">Entre 32 y 38 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-edad-bach')"><input type="radio" name="edad-bach" value="Entre 39 y 45 años"><span class="opt-txt">Entre 39 y 45 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-edad-bach')"><input type="radio" name="edad-bach" value="Mayor que 46 años"><span class="opt-txt">Mayor que 46 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-edad-bach')"><input type="radio" name="edad-bach" value="Otro"><span class="opt-txt">Otro: <input class="otro-in" type="text" id="edad-bach-otro" placeholder="en valores numéricos..." onclick="event.stopPropagation()"></span></label>
+    </div>
+    <div class="qerr" id="e-edad-bach">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">13.</span> ¿Ciudad o Municipio en donde cursó sus estudios de educación media? <span class="req">*</span></div>
+    <div class="selwrap">
+      <select class="qsel" id="q-depto-bach" onchange="cargarMunicipios('q-depto-bach','q-mun-bach-grid','q-mun-bach-search','q-mun-bach-tag','q-mun-bach-tag-nombre','bloque-mun-bach','munSelBach')">
+        <option value="">— Selecciona un departamento —</option>
+      </select>
+    </div>
+    <div class="qcard" id="bloque-mun-bach" style="display:none;margin-top:12px;background:var(--surface2);border:1px solid var(--border)">
+      <input class="qi mun-search-wrap" type="text" id="q-mun-bach-search" placeholder="🔍 Buscar municipio..." oninput="filtrarMun('q-mun-bach-search','q-mun-bach-grid','munSelBach',munListaBach)">
+      <div class="mun-grid" id="q-mun-bach-grid"></div>
+      <div class="mun-tag" id="q-mun-bach-tag">✓ Seleccionado: <strong id="q-mun-bach-tag-nombre"></strong></div>
+    </div>
+    <div class="qerr" id="e-mun-bach">Selecciona el municipio de bachillerato.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">14.</span> ¿Tipo de institución de educación media? <span class="req">*</span></div>
+    <div class="selwrap">
+      <select class="qsel" id="q-tipo-inst">
+        <option value="">— Selecciona —</option>
+        <option>Institución de educación media pública-zona urbana</option>
+        <option>Institución de educación media privada-zona urbana</option>
+        <option>Institución de educación media pública-zona rural</option>
+        <option>Institución de educación media privada-zona rural</option>
+        <option>Estudios nocturnos institución pública-zona urbana</option>
+        <option>Estudios nocturnos institución privada-zona urbana</option>
+        <option>Bachiller semiescolarizado o por ciclos (fines de semana) - zona urbana</option>
+      </select>
+    </div>
+    <div class="qerr" id="e-tipo-inst">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">15.</span> ¿Cuál era su estrato socioeconómico antes de iniciar sus estudios en UNIPAZ? <span class="req">*</span></div>
+    <div class="opts" id="q-estrato-ant">
+      <label class="opt" onclick="selRad(this,'q-estrato-ant')"><input type="radio" name="estrato-ant" value="1"><span class="opt-txt">1</span></label>
+      <label class="opt" onclick="selRad(this,'q-estrato-ant')"><input type="radio" name="estrato-ant" value="2"><span class="opt-txt">2</span></label>
+      <label class="opt" onclick="selRad(this,'q-estrato-ant')"><input type="radio" name="estrato-ant" value="3"><span class="opt-txt">3</span></label>
+      <label class="opt" onclick="selRad(this,'q-estrato-ant')"><input type="radio" name="estrato-ant" value="4"><span class="opt-txt">4</span></label>
+      <label class="opt" onclick="selRad(this,'q-estrato-ant')"><input type="radio" name="estrato-ant" value="5"><span class="opt-txt">5</span></label>
+      <label class="opt" onclick="selRad(this,'q-estrato-ant')"><input type="radio" name="estrato-ant" value="6"><span class="opt-txt">6</span></label>
+      <label class="opt" onclick="selRad(this,'q-estrato-ant')"><input type="radio" name="estrato-ant" value="Zona rural"><span class="opt-txt">Zona rural</span></label>
+    </div>
+    <div class="qerr" id="e-estrato-ant">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">16.</span> ¿Cuál era el ingreso familiar mensual aproximado antes de iniciar sus estudios en UNIPAZ? <span class="req">*</span></div>
+    <div class="opts" id="q-ingreso-ant">
+      <label class="opt" onclick="selRad(this,'q-ingreso-ant')"><input type="radio" name="ingreso-ant" value="Menor de un SMMLV"><span class="opt-txt">Menor de un SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingreso-ant')"><input type="radio" name="ingreso-ant" value="Un SMMLV"><span class="opt-txt">Un SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingreso-ant')"><input type="radio" name="ingreso-ant" value="Entre uno y dos SMMLV"><span class="opt-txt">Entre uno y dos SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingreso-ant')"><input type="radio" name="ingreso-ant" value="Entre dos y tres SMMLV"><span class="opt-txt">Entre dos y tres SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingreso-ant')"><input type="radio" name="ingreso-ant" value="Entre tres y cuatro SMMLV"><span class="opt-txt">Entre tres y cuatro SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingreso-ant')"><input type="radio" name="ingreso-ant" value="Entre cuatro y cinco SMMLV"><span class="opt-txt">Entre cuatro y cinco SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingreso-ant')"><input type="radio" name="ingreso-ant" value="Más de cinco SMMLV"><span class="opt-txt">Más de cinco SMMLV</span></label>
+    </div>
+    <div class="qerr" id="e-ingreso-ant">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">17.</span> ¿Qué factores considera que incidieron en su elección de universidad y programa académico? <span class="req">*</span></div>
+    <div class="opts" id="q-factores">
+      <label class="opt" onclick="selRad(this,'q-factores')"><input type="radio" name="factores" value="Calidad académica"><span class="opt-txt">Calidad académica</span></label>
+      <label class="opt" onclick="selRad(this,'q-factores')"><input type="radio" name="factores" value="Costo de la matrícula"><span class="opt-txt">Costo de la matrícula</span></label>
+      <label class="opt" onclick="selRad(this,'q-factores')"><input type="radio" name="factores" value="Reconocimiento en el mercado"><span class="opt-txt">Reconocimiento en el mercado</span></label>
+      <label class="opt" onclick="selRad(this,'q-factores')"><input type="radio" name="factores" value="Ubicación de la Institución"><span class="opt-txt">Ubicación de la Institución</span></label>
+      <label class="opt" onclick="selRad(this,'q-factores')"><input type="radio" name="factores" value="Facilidad de financiación de matrícula"><span class="opt-txt">Facilidad de financiación de matrícula</span></label>
+      <label class="opt" onclick="selRad(this,'q-factores')"><input type="radio" name="factores" value="Flexibilidad en los horarios de clases"><span class="opt-txt">Flexibilidad en los horarios de clases</span></label>
+      <label class="opt" onclick="selRad(this,'q-factores')"><input type="radio" name="factores" value="Duración del programa"><span class="opt-txt">Duración del programa</span></label>
+      <label class="opt" onclick="selRad(this,'q-factores')"><input type="radio" name="factores" value="Proceso de admisión"><span class="opt-txt">Proceso de admisión</span></label>
+      <label class="opt" onclick="selRad(this,'q-factores')"><input type="radio" name="factores" value="Otro"><span class="opt-txt">Otro: <input class="otro-in" type="text" id="factores-otro" placeholder="especifica..." onclick="event.stopPropagation()"></span></label>
+    </div>
+    <div class="qerr" id="e-factores">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">18.</span> ¿Cómo financió sus estudios en UNIPAZ?</div>
+    <div class="opts" id="q-financiacion">
+      <label class="opt" onclick="selRad(this,'q-financiacion')"><input type="radio" name="financiacion" value="Ingresos propios"><span class="opt-txt">Ingresos propios</span></label>
+      <label class="opt" onclick="selRad(this,'q-financiacion')"><input type="radio" name="financiacion" value="Familiares"><span class="opt-txt">Familiares</span></label>
+      <label class="opt" onclick="selRad(this,'q-financiacion')"><input type="radio" name="financiacion" value="Crédito con entidad bancaria o financiera"><span class="opt-txt">Crédito con entidad bancaria o financiera</span></label>
+      <label class="opt" onclick="selRad(this,'q-financiacion')"><input type="radio" name="financiacion" value="Beca UNIPAZ"><span class="opt-txt">Beca UNIPAZ</span></label>
+      <label class="opt" onclick="selRad(this,'q-financiacion')"><input type="radio" name="financiacion" value="Beca Alcaldía (Barrancabermeja)"><span class="opt-txt">Beca Alcaldía (Barrancabermeja)</span></label>
+      <label class="opt" onclick="selRad(this,'q-financiacion')"><input type="radio" name="financiacion" value="Matrícula cero"><span class="opt-txt">Matrícula cero</span></label>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-back" onclick="prevSec(3)">← Anterior</button>
+    <button class="btn-next" onclick="nextSec(3)">Continuar →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECCIÓN 4 — SATISFACCIÓN ACADÉMICA (Likert)
+═══════════════════════════════════════════ -->
+<div class="section" id="sec-4">
+  <div class="sec-header">
+    <div class="sec-badge">⭐ Sección 4 de 7</div>
+    <div class="sec-title">Satisfacción con la Formación</div>
+  </div>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">Para las siguientes preguntas, indique su nivel de satisfacción: <strong>1</strong> = Muy insatisfecho · <strong>2</strong> = Insatisfecho · <strong>3</strong> = Poco satisfecho · <strong>4</strong> = Satisfecho · <strong>5</strong> = Muy satisfecho</p>
+
+  <!-- Q19: Currículo e internacionalización -->
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">19.</span> Calidad del currículo y la Internacionalización en el desarrollo profesional <span class="req">*</span></div>
+    <div class="likert-wrap" id="q-likert-19">
+      <table class="likert-tbl">
+        <thead><tr><th>Aspecto</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+        <tbody id="lk19-body"></tbody>
+      </table>
+    </div>
+    <div class="qerr" id="e-likert-19">Por favor responde todos los ítems.</div>
+  </div>
+
+  <!-- Q20: Formación académica recibida -->
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">20.</span> Formación académica recibida <span class="req">*</span></div>
+    <div class="likert-wrap" id="q-likert-20">
+      <table class="likert-tbl">
+        <thead><tr><th>Aspecto</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+        <tbody id="lk20-body"></tbody>
+      </table>
+    </div>
+    <div class="qerr" id="e-likert-20">Por favor responde todos los ítems.</div>
+  </div>
+
+  <!-- Q21: Bienestar -->
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">21.</span> Servicios de bienestar universitario <span class="req">*</span></div>
+    <div class="likert-wrap">
+      <table class="likert-tbl">
+        <thead><tr><th>Aspecto</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+        <tbody id="lk21-body"></tbody>
+      </table>
+    </div>
+    <div class="qerr" id="e-likert-21">Por favor responde todos los ítems.</div>
+  </div>
+
+  <!-- Q22: Recursos -->
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">22.</span> Recursos físicos, técnicos y tecnológicos <span class="req">*</span></div>
+    <div class="likert-wrap">
+      <table class="likert-tbl">
+        <thead><tr><th>Aspecto</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+        <tbody id="lk22-body"></tbody>
+      </table>
+    </div>
+    <div class="qerr" id="e-likert-22">Por favor responde todos los ítems.</div>
+  </div>
+
+  <!-- Q23: Competencias -->
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">23.</span> Competencias adquiridas para el mercado laboral <span class="req">*</span></div>
+    <div class="likert-wrap">
+      <table class="likert-tbl">
+        <thead><tr><th>Aspecto</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+        <tbody id="lk23-body"></tbody>
+      </table>
+    </div>
+    <div class="qerr" id="e-likert-23">Por favor responde todos los ítems.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">24.</span> ¿Cree usted que está mejor preparado con respecto a egresados de otros institutos? <span class="req">*</span></div>
+    <div class="opts" id="q-mejor-prep">
+      <label class="opt" onclick="selRad(this,'q-mejor-prep')"><input type="radio" name="mejor-prep" value="Sí"><span class="opt-txt">Sí</span></label>
+      <label class="opt" onclick="selRad(this,'q-mejor-prep')"><input type="radio" name="mejor-prep" value="No"><span class="opt-txt">No</span></label>
+      <label class="opt" onclick="selRad(this,'q-mejor-prep')"><input type="radio" name="mejor-prep" value="No sabe"><span class="opt-txt">No sabe</span></label>
+      <label class="opt" onclick="selRad(this,'q-mejor-prep')"><input type="radio" name="mejor-prep" value="Otro"><span class="opt-txt">Otro: <input class="otro-in" type="text" id="mejor-prep-otro" placeholder="justifica tu respuesta..." onclick="event.stopPropagation()"></span></label>
+    </div>
+    <div class="qerr" id="e-mejor-prep">Selecciona una opción.</div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-back" onclick="prevSec(4)">← Anterior</button>
+    <button class="btn-next" onclick="nextSec(4)">Continuar →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECCIÓN 5 — SITUACIÓN LABORAL
+═══════════════════════════════════════════ -->
+<div class="section" id="sec-5">
+  <div class="sec-header">
+    <div class="sec-badge">💼 Sección 5 de 7</div>
+    <div class="sec-title">Situación Laboral Actual</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">25.</span> ¿Estás actualmente empleado? <span class="req">*</span></div>
+    <div class="opts" id="q-empleado">
+      <label class="opt" onclick="selRad(this,'q-empleado');toggleEmpleo('Si')"><input type="radio" name="empleado" value="Sí"><span class="opt-txt">Sí</span></label>
+      <label class="opt" onclick="selRad(this,'q-empleado');toggleEmpleo('No')"><input type="radio" name="empleado" value="No"><span class="opt-txt">No</span></label>
+    </div>
+    <div class="qerr" id="e-empleado">Selecciona una opción.</div>
+  </div>
+
+  <!-- EMPLEADO: datos empresa -->
+  <div id="bloque-empresa" style="display:none">
+    <div class="qcard">
+      <div class="qlabel"><span class="qnum">26.</span> ¿Cuál es el nombre de la empresa?</div>
+      <input class="qi" type="text" id="q-empresa" placeholder="Nombre de la empresa u organización">
+    </div>
+    <div class="qcard">
+      <div class="qlabel"><span class="qnum">27.</span> ¿Cuál es la dirección de la empresa?</div>
+      <input class="qi" type="text" id="q-dir-empresa" placeholder="Dirección completa">
+    </div>
+    <div class="qcard">
+      <div class="qlabel"><span class="qnum">28.</span> ¿Cuál es el correo electrónico de su jefe inmediato?</div>
+      <input class="qi" type="email" id="q-correo-jefe" placeholder="jefe@empresa.com">
+    </div>
+    <div class="qcard">
+      <div class="qlabel"><span class="qnum">29.</span> ¿Qué tipo de clasificación tiene la empresa?</div>
+      <div class="opts" id="q-tipo-empresa">
+        <label class="opt" onclick="selRad(this,'q-tipo-empresa')"><input type="radio" name="tipo-empresa" value="Pública"><span class="opt-txt">Pública</span></label>
+        <label class="opt" onclick="selRad(this,'q-tipo-empresa')"><input type="radio" name="tipo-empresa" value="Privada"><span class="opt-txt">Privada</span></label>
+        <label class="opt" onclick="selRad(this,'q-tipo-empresa')"><input type="radio" name="tipo-empresa" value="Mixta"><span class="opt-txt">Mixta</span></label>
+        <label class="opt" onclick="selRad(this,'q-tipo-empresa')"><input type="radio" name="tipo-empresa" value="ONG"><span class="opt-txt">ONG</span></label>
+        <label class="opt" onclick="selRad(this,'q-tipo-empresa')"><input type="radio" name="tipo-empresa" value="Social"><span class="opt-txt">Social</span></label>
+      </div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel"><span class="qnum">30.</span> ¿Cuál es el sector económico de la empresa u organización? <span class="req">*</span></div>
+      <div class="opts" id="q-sector">
+        <label class="opt" onclick="selRad(this,'q-sector');toggleSector('primario')"><input type="radio" name="sector" value="Sector Primario"><span class="opt-txt">Sector Primario</span></label>
+        <label class="opt" onclick="selRad(this,'q-sector');toggleSector('industria')"><input type="radio" name="sector" value="Industria"><span class="opt-txt">Industria</span></label>
+        <label class="opt" onclick="selRad(this,'q-sector');toggleSector('comercio')"><input type="radio" name="sector" value="Comercio"><span class="opt-txt">Comercio</span></label>
+        <label class="opt" onclick="selRad(this,'q-sector');toggleSector('servicios')"><input type="radio" name="sector" value="Servicios"><span class="opt-txt">Servicios</span></label>
+        <label class="opt" onclick="selRad(this,'q-sector');toggleSector('otro')"><input type="radio" name="sector" value="Otro"><span class="opt-txt">Otro: <input class="otro-in" type="text" id="sector-otro" placeholder="especifica..." onclick="event.stopPropagation()"></span></label>
+      </div>
+      <div class="qerr" id="e-sector">Selecciona una opción.</div>
+    </div>
+
+    <!-- Subsectores condicionales -->
+    <div class="qcard" id="sub-primario" style="display:none">
+      <div class="qlabel"><span class="qnum">31.</span> ¿Cuál es el subsector? (Sector Primario)</div>
+      <div class="opts" id="q-sub-primario">
+        <label class="opt" onclick="selRad(this,'q-sub-primario')"><input type="radio" name="sub-primario" value="Infraestructura para agricultura y riego"><span class="opt-txt">Infraestructura para agricultura y riego</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-primario')"><input type="radio" name="sub-primario" value="Infraestructura para extracción (minería/canteras)"><span class="opt-txt">Infraestructura para extracción (minería/canteras)</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-primario')"><input type="radio" name="sub-primario" value="Obras para manejo de agua y suelo rural"><span class="opt-txt">Obras para manejo de agua y suelo rural</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-primario')"><input type="radio" name="sub-primario" value="Infraestructura para energía en zona rural"><span class="opt-txt">Infraestructura para energía en zona rural</span></label>
+      </div>
+    </div>
+    <div class="qcard" id="sub-industria" style="display:none">
+      <div class="qlabel"><span class="qnum">31.</span> ¿Cuál es el subsector? (Industria)</div>
+      <div class="opts" id="q-sub-industria">
+        <label class="opt" onclick="selRad(this,'q-sub-industria')"><input type="radio" name="sub-industria" value="Construcción de edificaciones"><span class="opt-txt">Construcción de edificaciones</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-industria')"><input type="radio" name="sub-industria" value="Obra civil e infraestructura"><span class="opt-txt">Obra civil e infraestructura</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-industria')"><input type="radio" name="sub-industria" value="Materiales de construcción"><span class="opt-txt">Materiales de construcción</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-industria')"><input type="radio" name="sub-industria" value="Montajes y obras industriales"><span class="opt-txt">Montajes y obras industriales</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-industria')"><input type="radio" name="sub-industria" value="Mantenimiento y rehabilitación de infraestructura"><span class="opt-txt">Mantenimiento y rehabilitación de infraestructura</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-industria')"><input type="radio" name="sub-industria" value="Interventoría y aseguramiento de calidad (QA/QC)"><span class="opt-txt">Interventoría y aseguramiento de calidad (QA/QC)</span></label>
+      </div>
+    </div>
+    <div class="qcard" id="sub-comercio" style="display:none">
+      <div class="qlabel"><span class="qnum">31.</span> ¿Cuál es el subsector? (Comercio)</div>
+      <div class="opts" id="q-sub-comercio">
+        <label class="opt" onclick="selRad(this,'q-sub-comercio')"><input type="radio" name="sub-comercio" value="Suministro y distribución de materiales"><span class="opt-txt">Suministro y distribución de materiales</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-comercio')"><input type="radio" name="sub-comercio" value="Ferretería técnica / soluciones constructivas"><span class="opt-txt">Ferretería técnica / soluciones constructivas</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-comercio')"><input type="radio" name="sub-comercio" value="Alquiler y comercialización de maquinaria/equipos"><span class="opt-txt">Alquiler y comercialización de maquinaria/equipos</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-comercio')"><input type="radio" name="sub-comercio" value="Importación y logística de insumos"><span class="opt-txt">Importación y logística de insumos</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-comercio')"><input type="radio" name="sub-comercio" value="Comercialización de servicios de construcción"><span class="opt-txt">Comercialización de servicios de construcción</span></label>
+      </div>
+    </div>
+    <div class="qcard" id="sub-servicios" style="display:none">
+      <div class="qlabel"><span class="qnum">31.</span> ¿Cuál es el subsector? (Servicios)</div>
+      <div class="opts" id="q-sub-servicios">
+        <label class="opt" onclick="selRad(this,'q-sub-servicios')"><input type="radio" name="sub-servicios" value="Consultoría técnica de obra"><span class="opt-txt">Consultoría técnica de obra (presupuestos/APU, programación)</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-servicios')"><input type="radio" name="sub-servicios" value="Interventoría/supervisión"><span class="opt-txt">Interventoría/supervisión</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-servicios')"><input type="radio" name="sub-servicios" value="Topografía y apoyo geomático"><span class="opt-txt">Topografía y apoyo geomático</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-servicios')"><input type="radio" name="sub-servicios" value="Laboratorios y ensayos"><span class="opt-txt">Laboratorios y ensayos (suelos, concretos, asfaltos)</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-servicios')"><input type="radio" name="sub-servicios" value="SST y gestión ambiental en obra"><span class="opt-txt">SST y gestión ambiental en obra</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-servicios')"><input type="radio" name="sub-servicios" value="Gestión pública y obras públicas"><span class="opt-txt">Gestión pública y obras públicas</span></label>
+        <label class="opt" onclick="selRad(this,'q-sub-servicios')"><input type="radio" name="sub-servicios" value="Servicios públicos e infraestructura urbana"><span class="opt-txt">Servicios públicos e infraestructura urbana</span></label>
+      </div>
+    </div>
+
+    <div class="qcard">
+      <div class="qlabel"><span class="qnum">32.</span> ¿Cuál es su posición actual dentro de la empresa? <span class="req">*</span></div>
+      <div class="opts" id="q-posicion">
+        <label class="opt" onclick="selRad(this,'q-posicion')"><input type="radio" name="posicion" value="Directivo"><span class="opt-txt">Directivo</span></label>
+        <label class="opt" onclick="selRad(this,'q-posicion')"><input type="radio" name="posicion" value="Supervisor"><span class="opt-txt">Supervisor</span></label>
+        <label class="opt" onclick="selRad(this,'q-posicion')"><input type="radio" name="posicion" value="Profesional"><span class="opt-txt">Profesional</span></label>
+        <label class="opt" onclick="selRad(this,'q-posicion')"><input type="radio" name="posicion" value="Docente"><span class="opt-txt">Docente</span></label>
+        <label class="opt" onclick="selRad(this,'q-posicion')"><input type="radio" name="posicion" value="Empresario"><span class="opt-txt">Empresario</span></label>
+        <label class="opt" onclick="selRad(this,'q-posicion')"><input type="radio" name="posicion" value="Investigador"><span class="opt-txt">Investigador</span></label>
+        <label class="opt" onclick="selRad(this,'q-posicion')"><input type="radio" name="posicion" value="Asesor/Consultor"><span class="opt-txt">Asesor/Consultor</span></label>
+        <label class="opt" onclick="selRad(this,'q-posicion')"><input type="radio" name="posicion" value="Técnico"><span class="opt-txt">Técnico</span></label>
+        <label class="opt" onclick="selRad(this,'q-posicion')"><input type="radio" name="posicion" value="Tecnólogo"><span class="opt-txt">Tecnólogo</span></label>
+      </div>
+      <div class="qerr" id="e-posicion">Selecciona una opción.</div>
+    </div>
+
+    <div class="qcard">
+      <div class="qlabel"><span class="qnum">33.</span> ¿Cuál es su tipo de contrato de trabajo actual? <span class="req">*</span></div>
+      <div class="opts" id="q-contrato">
+        <label class="opt" onclick="selRad(this,'q-contrato')"><input type="radio" name="contrato" value="Contrato a término fijo"><span class="opt-txt">Contrato a término fijo</span></label>
+        <label class="opt" onclick="selRad(this,'q-contrato')"><input type="radio" name="contrato" value="Contrato a término indefinido"><span class="opt-txt">Contrato a término indefinido</span></label>
+        <label class="opt" onclick="selRad(this,'q-contrato')"><input type="radio" name="contrato" value="Contrato a obra o labor"><span class="opt-txt">Contrato a obra o labor</span></label>
+        <label class="opt" onclick="selRad(this,'q-contrato')"><input type="radio" name="contrato" value="Contrato civil por prestación de servicios"><span class="opt-txt">Contrato civil por prestación de servicios</span></label>
+        <label class="opt" onclick="selRad(this,'q-contrato')"><input type="radio" name="contrato" value="Contrato ocasional de trabajo"><span class="opt-txt">Contrato ocasional de trabajo</span></label>
+      </div>
+      <div class="qerr" id="e-contrato">Selecciona una opción.</div>
+    </div>
+
+    <div class="qcard">
+      <div class="qlabel"><span class="qnum">34.</span> ¿Qué tan relacionadas están las actividades que realiza con la carrera que estudió? <span class="req">*</span></div>
+      <div class="opts" id="q-relacion">
+        <label class="opt" onclick="selRad(this,'q-relacion')"><input type="radio" name="relacion" value="Directamente relacionado"><span class="opt-txt">Directamente relacionado</span></label>
+        <label class="opt" onclick="selRad(this,'q-relacion')"><input type="radio" name="relacion" value="Indirectamente relacionado"><span class="opt-txt">Indirectamente relacionado</span></label>
+        <label class="opt" onclick="selRad(this,'q-relacion')"><input type="radio" name="relacion" value="Nada relacionado"><span class="opt-txt">Nada relacionado</span></label>
+      </div>
+      <div class="qerr" id="e-relacion">Selecciona una opción.</div>
+    </div>
+  </div>
+
+  <!-- NO EMPLEADO -->
+  <div id="bloque-no-empleo" style="display:none">
+    <div class="qcard">
+      <div class="qlabel"><span class="qnum">35.</span> Si no está empleado. ¿Cuál es su situación actual?</div>
+      <div class="opts" id="q-sin-empleo">
+        <label class="opt" onclick="selRad(this,'q-sin-empleo')"><input type="radio" name="sin-empleo" value="Emprendedor/Dueño de negocio"><span class="opt-txt">Emprendedor/Dueño de negocio</span></label>
+        <label class="opt" onclick="selRad(this,'q-sin-empleo')"><input type="radio" name="sin-empleo" value="Estudiante (continuando estudios)"><span class="opt-txt">Estudiante (continuando estudios)</span></label>
+        <label class="opt" onclick="selRad(this,'q-sin-empleo')"><input type="radio" name="sin-empleo" value="Buscando empleo activamente"><span class="opt-txt">Buscando empleo activamente</span></label>
+        <label class="opt" onclick="selRad(this,'q-sin-empleo')"><input type="radio" name="sin-empleo" value="Otro"><span class="opt-txt">Otro: <input class="otro-in" type="text" id="sin-empleo-otro" placeholder="especifica..." onclick="event.stopPropagation()"></span></label>
+      </div>
+    </div>
+    <div class="qcard">
+      <div class="qlabel"><span class="qnum">36.</span> ¿Cuál considera que ha sido la principal dificultad para conseguir empleo?</div>
+      <div class="opts" id="q-dificultad">
+        <label class="opt" onclick="selRad(this,'q-dificultad')"><input type="radio" name="dificultad" value="Falta de experiencia"><span class="opt-txt">Falta de experiencia</span></label>
+        <label class="opt" onclick="selRad(this,'q-dificultad')"><input type="radio" name="dificultad" value="Requisitos educativos elevados"><span class="opt-txt">Requisitos educativos elevados</span></label>
+        <label class="opt" onclick="selRad(this,'q-dificultad')"><input type="radio" name="dificultad" value="Falta de redes de contactos"><span class="opt-txt">Falta de redes de contactos</span></label>
+        <label class="opt" onclick="selRad(this,'q-dificultad')"><input type="radio" name="dificultad" value="Discriminación de edad, género, apariencia física"><span class="opt-txt">Discriminación de edad, género, apariencia física</span></label>
+        <label class="opt" onclick="selRad(this,'q-dificultad')"><input type="radio" name="dificultad" value="Falta de oportunidades laborales en el mercado"><span class="opt-txt">Falta de oportunidades laborales en el mercado</span></label>
+        <label class="opt" onclick="selRad(this,'q-dificultad')"><input type="radio" name="dificultad" value="Otro"><span class="opt-txt">Otro: <input class="otro-in" type="text" id="dificultad-otro" onclick="event.stopPropagation()"></span></label>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-back" onclick="prevSec(5)">← Anterior</button>
+    <button class="btn-next" onclick="nextSec(5)">Continuar →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECCIÓN 6 — TRAYECTORIA LABORAL
+═══════════════════════════════════════════ -->
+<div class="section" id="sec-6">
+  <div class="sec-header">
+    <div class="sec-badge">📈 Sección 6 de 7</div>
+    <div class="sec-title">Trayectoria Laboral</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">37.</span> ¿Cuánto tiempo tomó desde su graduación hasta que obtuvo su primer empleo? <span class="req">*</span></div>
+    <div class="opts" id="q-tiempo-primer">
+      <label class="opt" onclick="selRad(this,'q-tiempo-primer')"><input type="radio" name="tiempo-primer" value="Menos de 3 meses"><span class="opt-txt">Menos de 3 meses</span></label>
+      <label class="opt" onclick="selRad(this,'q-tiempo-primer')"><input type="radio" name="tiempo-primer" value="Entre 3 y 6 meses"><span class="opt-txt">Entre 3 y 6 meses</span></label>
+      <label class="opt" onclick="selRad(this,'q-tiempo-primer')"><input type="radio" name="tiempo-primer" value="Entre 6 meses y 1 año"><span class="opt-txt">Entre 6 meses y 1 año</span></label>
+      <label class="opt" onclick="selRad(this,'q-tiempo-primer')"><input type="radio" name="tiempo-primer" value="Entre 1 y 2 años"><span class="opt-txt">Entre 1 y 2 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-tiempo-primer')"><input type="radio" name="tiempo-primer" value="Más de 2 años"><span class="opt-txt">Más de 2 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-tiempo-primer')"><input type="radio" name="tiempo-primer" value="No me he vinculado laboralmente"><span class="opt-txt">No me he vinculado laboralmente</span></label>
+    </div>
+    <div class="qerr" id="e-tiempo-primer">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">38.</span> ¿Cuánto tiempo de experiencia laboral general tiene? <span class="req">*</span></div>
+    <div class="opts" id="q-exp-general">
+      <label class="opt" onclick="selRad(this,'q-exp-general')"><input type="radio" name="exp-general" value="1 mes a 6 meses"><span class="opt-txt">1 mes a 6 meses</span></label>
+      <label class="opt" onclick="selRad(this,'q-exp-general')"><input type="radio" name="exp-general" value="6 meses a 12 meses"><span class="opt-txt">6 meses a 12 meses</span></label>
+      <label class="opt" onclick="selRad(this,'q-exp-general')"><input type="radio" name="exp-general" value="1 año a 3 años"><span class="opt-txt">1 año a 3 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-exp-general')"><input type="radio" name="exp-general" value="3 años a 5 años"><span class="opt-txt">3 años a 5 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-exp-general')"><input type="radio" name="exp-general" value="Más de 5 años"><span class="opt-txt">Más de 5 años</span></label>
+    </div>
+    <div class="qerr" id="e-exp-general">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">39.</span> ¿Cuánto tiempo de experiencia laboral tiene específicamente en el campo relacionado con su formación en UNIPAZ? <span class="req">*</span></div>
+    <div class="opts" id="q-exp-area">
+      <label class="opt" onclick="selRad(this,'q-exp-area')"><input type="radio" name="exp-area" value="1 mes a 6 meses"><span class="opt-txt">1 mes a 6 meses</span></label>
+      <label class="opt" onclick="selRad(this,'q-exp-area')"><input type="radio" name="exp-area" value="6 meses a 12 meses"><span class="opt-txt">6 meses a 12 meses</span></label>
+      <label class="opt" onclick="selRad(this,'q-exp-area')"><input type="radio" name="exp-area" value="1 año a 3 años"><span class="opt-txt">1 año a 3 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-exp-area')"><input type="radio" name="exp-area" value="3 años a 5 años"><span class="opt-txt">3 años a 5 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-exp-area')"><input type="radio" name="exp-area" value="Más de 5 años"><span class="opt-txt">Más de 5 años</span></label>
+      <label class="opt" onclick="selRad(this,'q-exp-area')"><input type="radio" name="exp-area" value="No tiene experiencia en su área de formación"><span class="opt-txt">No tiene experiencia en su área de formación</span></label>
+    </div>
+    <div class="qerr" id="e-exp-area">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">40.</span> ¿Qué medio le ha sido el más efectivo a la hora de conseguir empleo?</div>
+    <div class="opts" id="q-medio-empleo">
+      <label class="opt" onclick="selRad(this,'q-medio-empleo')"><input type="radio" name="medio-empleo" value="Portal de empleo en línea (LinkedIn, Indeed)"><span class="opt-txt">Portal de empleo en línea (LinkedIn, Indeed)</span></label>
+      <label class="opt" onclick="selRad(this,'q-medio-empleo')"><input type="radio" name="medio-empleo" value="Contacto directo con la empresa"><span class="opt-txt">Contacto directo con la empresa</span></label>
+      <label class="opt" onclick="selRad(this,'q-medio-empleo')"><input type="radio" name="medio-empleo" value="Feria de empleo o evento networking"><span class="opt-txt">Feria de empleo o evento networking</span></label>
+      <label class="opt" onclick="selRad(this,'q-medio-empleo')"><input type="radio" name="medio-empleo" value="Referencia de un amigo o conocido"><span class="opt-txt">Referencia de un amigo o conocido</span></label>
+      <label class="opt" onclick="selRad(this,'q-medio-empleo')"><input type="radio" name="medio-empleo" value="Concurso de mérito"><span class="opt-txt">Concurso de mérito</span></label>
+      <label class="opt" onclick="selRad(this,'q-medio-empleo')"><input type="radio" name="medio-empleo" value="Headhunter/Agencia de reclutamiento"><span class="opt-txt">Headhunter / Agencia de reclutamiento</span></label>
+      <label class="opt" onclick="selRad(this,'q-medio-empleo')"><input type="radio" name="medio-empleo" value="Red de egresados de la universidad"><span class="opt-txt">Red de egresados de la universidad</span></label>
+      <label class="opt" onclick="selRad(this,'q-medio-empleo')"><input type="radio" name="medio-empleo" value="Publicación en redes sociales"><span class="opt-txt">Publicación en redes sociales</span></label>
+      <label class="opt" onclick="selRad(this,'q-medio-empleo')"><input type="radio" name="medio-empleo" value="Otro"><span class="opt-txt">Otro: <input class="otro-in" type="text" onclick="event.stopPropagation()"></span></label>
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">41.</span> ¿Ha requerido adelantar otros estudios adicionales al graduarse para poder conseguir su primer empleo? <span class="req">*</span></div>
+    <div class="opts" id="q-estudios-add">
+      <label class="opt" onclick="selRad(this,'q-estudios-add');toggleEstudiosAd('Si')"><input type="radio" name="estudios-add" value="Sí"><span class="opt-txt">Sí</span></label>
+      <label class="opt" onclick="selRad(this,'q-estudios-add');toggleEstudiosAd('No')"><input type="radio" name="estudios-add" value="No"><span class="opt-txt">No</span></label>
+    </div>
+    <div class="qerr" id="e-estudios-add">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard" id="bloque-cuales-estudios" style="display:none">
+    <div class="qlabel"><span class="qnum">42.</span> ¿Cuáles estudios?</div>
+    <div class="opts" id="q-cuales-estudios">
+      <label class="opt" onclick="selRad(this,'q-cuales-estudios')"><input type="radio" name="cuales-estudios" value="Seminarios"><span class="opt-txt">Seminarios</span></label>
+      <label class="opt" onclick="selRad(this,'q-cuales-estudios')"><input type="radio" name="cuales-estudios" value="Cursos"><span class="opt-txt">Cursos</span></label>
+      <label class="opt" onclick="selRad(this,'q-cuales-estudios')"><input type="radio" name="cuales-estudios" value="Diplomados"><span class="opt-txt">Diplomados</span></label>
+      <label class="opt" onclick="selRad(this,'q-cuales-estudios')"><input type="radio" name="cuales-estudios" value="Estudios Técnicos"><span class="opt-txt">Estudios Técnicos</span></label>
+      <label class="opt" onclick="selRad(this,'q-cuales-estudios')"><input type="radio" name="cuales-estudios" value="Estudios Tecnológicos"><span class="opt-txt">Estudios Tecnológicos</span></label>
+      <label class="opt" onclick="selRad(this,'q-cuales-estudios')"><input type="radio" name="cuales-estudios" value="Universitarios"><span class="opt-txt">Universitarios</span></label>
+      <label class="opt" onclick="selRad(this,'q-cuales-estudios')"><input type="radio" name="cuales-estudios" value="Especialización"><span class="opt-txt">Especialización</span></label>
+      <label class="opt" onclick="selRad(this,'q-cuales-estudios')"><input type="radio" name="cuales-estudios" value="Maestría"><span class="opt-txt">Maestría</span></label>
+      <label class="opt" onclick="selRad(this,'q-cuales-estudios')"><input type="radio" name="cuales-estudios" value="Doctorado"><span class="opt-txt">Doctorado</span></label>
+      <label class="opt" onclick="selRad(this,'q-cuales-estudios')"><input type="radio" name="cuales-estudios" value="Post doctorado"><span class="opt-txt">Post doctorado</span></label>
+      <label class="opt" onclick="selRad(this,'q-cuales-estudios')"><input type="radio" name="cuales-estudios" value="Otros estudios"><span class="opt-txt">Otros estudios</span></label>
+    </div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">43.</span> ¿En cuál rango se encuentran actualmente sus ingresos? (SMMLV) <span class="req">*</span></div>
+    <div class="opts" id="q-ingresos">
+      <label class="opt" onclick="selRad(this,'q-ingresos')"><input type="radio" name="ingresos" value="Menor de un SMMLV"><span class="opt-txt">Menor de un SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingresos')"><input type="radio" name="ingresos" value="Un SMMLV"><span class="opt-txt">Un SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingresos')"><input type="radio" name="ingresos" value="Entre uno y dos SMMLV"><span class="opt-txt">Entre uno y dos SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingresos')"><input type="radio" name="ingresos" value="Entre dos y tres SMMLV"><span class="opt-txt">Entre dos y tres SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingresos')"><input type="radio" name="ingresos" value="Entre tres y cuatro SMMLV"><span class="opt-txt">Entre tres y cuatro SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingresos')"><input type="radio" name="ingresos" value="Entre cuatro y cinco SMMLV"><span class="opt-txt">Entre cuatro y cinco SMMLV</span></label>
+      <label class="opt" onclick="selRad(this,'q-ingresos')"><input type="radio" name="ingresos" value="Más de cinco SMMLV"><span class="opt-txt">Más de cinco SMMLV</span></label>
+    </div>
+    <div class="qerr" id="e-ingresos">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">44.</span> ¿Qué tipo de vivienda posee en la actualidad? <span class="req">*</span></div>
+    <div class="opts" id="q-vivienda">
+      <label class="opt" onclick="selRad(this,'q-vivienda')"><input type="radio" name="vivienda" value="En arriendo o subarriendo"><span class="opt-txt">En arriendo o subarriendo</span></label>
+      <label class="opt" onclick="selRad(this,'q-vivienda')"><input type="radio" name="vivienda" value="Propia totalmente pagada"><span class="opt-txt">Propia totalmente pagada</span></label>
+      <label class="opt" onclick="selRad(this,'q-vivienda')"><input type="radio" name="vivienda" value="Con permiso del propietario, sin pago (usufructuario)"><span class="opt-txt">Con permiso del propietario, sin pago (usufructuario)</span></label>
+      <label class="opt" onclick="selRad(this,'q-vivienda')"><input type="radio" name="vivienda" value="Propia, la están pagando"><span class="opt-txt">Propia, la están pagando</span></label>
+      <label class="opt" onclick="selRad(this,'q-vivienda')"><input type="radio" name="vivienda" value="Posesión sin título (ocupante de hecho)"><span class="opt-txt">Posesión sin título (ocupante de hecho)</span></label>
+      <label class="opt" onclick="selRad(this,'q-vivienda')"><input type="radio" name="vivienda" value="Propiedad colectiva"><span class="opt-txt">Propiedad colectiva</span></label>
+    </div>
+    <div class="qerr" id="e-vivienda">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">45.</span> ¿Cuál es el estrato socioeconómico alcanzado actualmente?</div>
+    <div class="opts" id="q-estrato-act">
+      <label class="opt" onclick="selRad(this,'q-estrato-act')"><input type="radio" name="estrato-act" value="Estrato 1"><span class="opt-txt">Estrato 1</span></label>
+      <label class="opt" onclick="selRad(this,'q-estrato-act')"><input type="radio" name="estrato-act" value="Estrato 2"><span class="opt-txt">Estrato 2</span></label>
+      <label class="opt" onclick="selRad(this,'q-estrato-act')"><input type="radio" name="estrato-act" value="Estrato 3"><span class="opt-txt">Estrato 3</span></label>
+      <label class="opt" onclick="selRad(this,'q-estrato-act')"><input type="radio" name="estrato-act" value="Estrato 4"><span class="opt-txt">Estrato 4</span></label>
+      <label class="opt" onclick="selRad(this,'q-estrato-act')"><input type="radio" name="estrato-act" value="Estrato 5"><span class="opt-txt">Estrato 5</span></label>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-back" onclick="prevSec(6)">← Anterior</button>
+    <button class="btn-next" onclick="nextSec(6)">Continuar →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SECCIÓN 7 — IMPACTO Y RECOMENDACIONES
+═══════════════════════════════════════════ -->
+<div class="section" id="sec-7">
+  <div class="sec-header">
+    <div class="sec-badge">🌱 Sección 7 de 7</div>
+    <div class="sec-title">Impacto Social y Recomendaciones</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">46.</span> ¿Considera que su trabajo ha contribuido al desarrollo de su comunidad, ciudad o región? <span class="req">*</span></div>
+    <div class="opts" id="q-contribucion">
+      <label class="opt" onclick="selRad(this,'q-contribucion');toggleContrib('Si')"><input type="radio" name="contribucion" value="Sí"><span class="opt-txt">Sí</span></label>
+      <label class="opt" onclick="selRad(this,'q-contribucion');toggleContrib('No')"><input type="radio" name="contribucion" value="No"><span class="opt-txt">No</span></label>
+    </div>
+    <div class="qerr" id="e-contribucion">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard" id="bloque-contrib-desc" style="display:none">
+    <div class="qlabel"><span class="qnum">47.</span> Si su respuesta anterior es afirmativa, descríbanos brevemente cómo ha contribuido:</div>
+    <textarea class="qi" id="q-contrib-desc" placeholder="Ej: Generación de nuevos empleos, mejoras en infraestructura, etc." rows="4"></textarea>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">48.</span> ¿Ha realizado aportes en la creación e innovación de conocimiento? <span class="req">*</span></div>
+    <div class="opts" id="q-innovacion">
+      <label class="opt" onclick="selRad(this,'q-innovacion');toggleInnov('Si')"><input type="radio" name="innovacion" value="Sí"><span class="opt-txt">Sí</span></label>
+      <label class="opt" onclick="selRad(this,'q-innovacion');toggleInnov('No')"><input type="radio" name="innovacion" value="No"><span class="opt-txt">No</span></label>
+    </div>
+    <div class="qerr" id="e-innovacion">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard" id="bloque-innov-desc" style="display:none">
+    <div class="qlabel"><span class="qnum">49.</span> Por favor descríbanos brevemente qué aportes ha generado:</div>
+    <textarea class="qi" id="q-innov-desc" placeholder="Descripción de sus aportes..." rows="4"></textarea>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">50.</span> ¿Ha recibido alguna distinción o reconocimiento por su desempeño? <span class="req">*</span></div>
+    <div class="opts" id="q-distincion">
+      <label class="opt" onclick="selRad(this,'q-distincion');toggleDist('Si')"><input type="radio" name="distincion" value="Sí"><span class="opt-txt">Sí</span></label>
+      <label class="opt" onclick="selRad(this,'q-distincion');toggleDist('No')"><input type="radio" name="distincion" value="No"><span class="opt-txt">No</span></label>
+    </div>
+    <div class="qerr" id="e-distincion">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard" id="bloque-dist-desc" style="display:none">
+    <div class="qlabel"><span class="qnum">51.</span> Por favor descríbanos el tipo y nombre de la(s) distinción(es) recibida(s):</div>
+    <textarea class="qi" id="q-dist-desc" placeholder="Tipo y nombre de la distinción..." rows="3"></textarea>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">52.</span> En su opinión, ¿qué posibilidades laborales tienen los egresados de su carrera en la región? <span class="req">*</span></div>
+    <div class="opts" id="q-posibilidades">
+      <label class="opt" onclick="selRad(this,'q-posibilidades')"><input type="radio" name="posibilidades" value="Excelente"><span class="opt-txt">Excelente</span></label>
+      <label class="opt" onclick="selRad(this,'q-posibilidades')"><input type="radio" name="posibilidades" value="Muy buena"><span class="opt-txt">Muy buena</span></label>
+      <label class="opt" onclick="selRad(this,'q-posibilidades')"><input type="radio" name="posibilidades" value="Buena"><span class="opt-txt">Buena</span></label>
+      <label class="opt" onclick="selRad(this,'q-posibilidades')"><input type="radio" name="posibilidades" value="Mala"><span class="opt-txt">Mala</span></label>
+    </div>
+    <div class="qerr" id="e-posibilidades">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">53.</span> ¿Recomendaría a otras personas estudiar la misma carrera que usted? <span class="req">*</span></div>
+    <div class="opts" id="q-recomienda">
+      <label class="opt" onclick="selRad(this,'q-recomienda')"><input type="radio" name="recomienda" value="Sí"><span class="opt-txt">Sí</span></label>
+      <label class="opt" onclick="selRad(this,'q-recomienda')"><input type="radio" name="recomienda" value="No"><span class="opt-txt">No</span></label>
+    </div>
+    <div class="qerr" id="e-recomienda">Selecciona una opción.</div>
+  </div>
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">54.</span> ¿Qué recomendación tiene para mejorar la formación profesional de los egresados de su programa académico? <span class="req">*</span></div>
+    <textarea class="qi" id="q-recomendacion" placeholder="Comparte tu recomendación..." rows="5"></textarea>
+    <div class="qerr" id="e-recomendacion">Por favor comparte tu recomendación.</div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn-back" onclick="prevSec(7)">← Anterior</button>
+    <button class="btn-next" id="btn-enviar" onclick="enviar()">
+      <span id="btn-txt">Enviar encuesta →</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+  </div>
+</div>
+
+</div><!-- /main-wrap -->
+
+<!-- SUCCESS -->
+<div class="wrap">
+  <div class="success-panel" id="success-panel">
+    <div class="ok-icon">✓</div>
+    <h2>¡Gracias por su participación!</h2>
+    <p>Sus respuestas han sido registradas correctamente. Su aporte es fundamental para el mejoramiento continuo del programa de <strong>Tecnología en Obras Civiles</strong> de la Escuela de Ingeniería Ambiental y Saneamiento — UNIPAZ.</p>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════
+// DATOS: Departamentos y municipios
+// ════════════════════════════════════════
+const DEPTOS_MUNS = {
+"Amazonas":["Leticia","Puerto Nariño","El Encanto","La Chorrera","La Pedrera","Mirití-Paraná","Puerto Alegría","Puerto Arica","Puerto Santander","Tarapacá"],
+"Antioquia":["Medellín","Abejorral","Abriaquí","Alejandría","Amagá","Amalfi","Andes","Angelópolis","Angostura","Anorí","Santa Fé de Antioquia","Anzá","Apartadó","Arboletes","Argelia","Armenia","Barbosa","Belmira","Bello","Betania","Betulia","Ciudad Bolívar","Briceño","Buriticá","Cáceres","Caicedo","Caldas","Campamento","Cañasgordas","Caracolí","Caramanta","Carepa","El Carmen de Viboral","Carolina","Caucasia","Chigorodó","Cisneros","Cocorná","Concepción","Concordia","Copacabana","Dabeiba","Donmatías","Ebéjico","El Bagre","Entrerríos","Envigado","Fredonia","Frontino","Giraldo","Girardota","Gómez Plata","Granada","Guadalupe","Guarne","Guatapé","Heliconia","Hispania","Itagüí","Ituango","Jardín","Jericó","La Ceja","La Estrella","La Pintada","La Unión","Liborina","Maceo","Marinilla","Montebello","Murindó","Mutatá","Nariño","Necoclí","Nechí","Olaya","Peñol","Peque","Pueblorrico","Puerto Berrío","Puerto Nare","Puerto Triunfo","Remedios","Retiro","Rionegro","Sabanalarga","Sabaneta","Salgar","San Andrés de Cuerquía","San Carlos","San Francisco","San Jerónimo","San José de la Montaña","San Juan de Urabá","San Luis","San Pedro de los Milagros","San Pedro de Urabá","San Rafael","San Roque","San Vicente Ferrer","Santa Bárbara","Santa Rosa de Osos","Santo Domingo","El Santuario","Segovia","Sonsón","Sopetrán","Támesis","Tarazá","Tarso","Titiribí","Toledo","Turbo","Uramita","Urrao","Valdivia","Valparaíso","Vegachí","Venecia","Vigía del Fuerte","Yalí","Yarumal","Yolombó","Yondó","Zaragoza"],
+"Arauca":["Arauca","Arauquita","Cravo Norte","Fortul","Puerto Rondón","Saravena","Tame"],
+"Atlántico":["Barranquilla","Baranoa","Campo de la Cruz","Candelaria","Galapa","Juan de Acosta","Luruaco","Malambo","Manatí","Palmar de Varela","Piojó","Polonuevo","Ponedera","Puerto Colombia","Repelón","Sabanagrande","Sabanalarga","Santa Lucía","Santo Tomás","Soledad","Suan","Tubará","Usiacurí"],
+"Bogotá D.C.":["Bogotá D.C."],
+"Bolívar":["Cartagena de Indias","Achí","Altos del Rosario","Arenal","Arjona","Arroyohondo","Barranco de Loba","Calamar","Cantagallo","Cicuco","Córdoba","Clemencia","El Carmen de Bolívar","El Guamo","El Peñón","Hatillo de Loba","Magangué","Mahates","Margarita","María la Baja","Montecristo","Santa Cruz de Mompox","Morales","Norosí","Pinillos","Regidor","Río Viejo","San Cristóbal","San Estanislao","San Fernando","San Jacinto","San Jacinto del Cauca","San Juan Nepomuceno","San Martín de Loba","San Pablo","Santa Catalina","Santa Rosa","Santa Rosa del Sur","Simití","Soplaviento","Talaigua Nuevo","Tiquisio","Turbaco","Turbaná","Villanueva","Zambrano"],
+"Boyacá":["Tunja","Almeida","Aquitania","Arcabuco","Belén","Berbeo","Betéitiva","Boavita","Boyacá","Briceño","Buenavista","Busbanzá","Caldas","Campohermoso","Cerinza","Chinavita","Chiquinquirá","Chiscas","Chita","Chitaraque","Chivatá","Chíquiza","Chivor","Ciénega","Cómbita","Coper","Corrales","Covarachía","Cubará","Cucaita","Cuítiva","Duitama","El Cocuy","El Espino","Firavitoba","Floresta","Gachantivá","Gámeza","Garagoa","Guacamayas","Guateque","Guayatá","Güicán de la Sierra","Iza","Jenesano","Jericó","Labranzagrande","La Capilla","La Victoria","La Uvita","Villa de Leyva","Macanal","Maripí","Miraflores","Mongua","Monguí","Moniquirá","Motavita","Muzo","Nobsa","Nuevo Colón","Oicatá","Otanche","Pachavita","Páez","Paipa","Pajarito","Panqueba","Pauna","Paya","Paz de Río","Pesca","Pisba","Puerto Boyacá","Quípama","Ramiriquí","Ráquira","Rondón","Saboyá","Sáchica","Samacá","San Eduardo","San José de Pare","San Luis de Gaceno","San Mateo","San Miguel de Sema","San Pablo de Borbur","Santana","Santa María","Santa Rosa de Viterbo","Santa Sofía","Sativanorte","Sativasur","Siachoque","Soatá","Socotá","Socha","Sogamoso","Somondoco","Sora","Sotaquirá","Soracá","Susacón","Sutamarchán","Sutatenza","Tasco","Tenza","Tibaná","Tibasosa","Tinjacá","Tipacoque","Toca","Togüí","Tópaga","Tota","Tununguá","Turmequé","Tuta","Tutazá","Úmbita","Ventaquemada","Viracachá","Zetaquira"],
+"Caldas":["Manizales","Aguadas","Anserma","Aranzazu","Belalcázar","Chinchiná","Filadelfia","La Dorada","La Merced","Manzanares","Marmato","Marquetalia","Marulanda","Neira","Norcasia","Pácora","Palestina","Pensilvania","Riosucio","Risaralda","Salamina","Samaná","San José","Supía","Victoria","Villamaría","Viterbo"],
+"Caquetá":["Florencia","Albania","Belén de los Andaquíes","Cartagena del Chairá","Curillo","El Doncello","El Paujíl","La Montañita","Milán","Morelia","Puerto Rico","San José del Fragua","San Vicente del Caguán","Solano","Solita","Valparaíso"],
+"Casanare":["Yopal","Aguazul","Chámeza","Hato Corozal","La Salina","Maní","Monterrey","Nunchía","Orocué","Paz de Ariporo","Pore","Recetor","Sabanalarga","Sácama","San Luis de Palenque","Támara","Tauramena","Trinidad","Villanueva"],
+"Cauca":["Popayán","Almaguer","Argelia","Balboa","Bolívar","Buenos Aires","Cajibío","Caldono","Caloto","Corinto","El Tambo","Florencia","Guachené","Guapi","Inzá","Jambaló","La Sierra","La Vega","López de Micay","Mercaderes","Miranda","Morales","Padilla","Páez","Patía","Piamonte","Piendamó - Tunía","Puerto Tejada","Puracé","Rosas","San Sebastián","Santander de Quilichao","Santa Rosa","Silvia","Sotará Paispamba","Suárez","Sucre","Timbío","Timbiquí","Toribío","Totoró","Villa Rica"],
+"Cesar":["Valledupar","Aguachica","Agustín Codazzi","Astrea","Becerril","Bosconia","Chimichagua","Chiriguaná","Curumaní","El Copey","El Paso","Gamarra","González","La Gloria","La Jagua de Ibirico","Manaure Balcón del Cesar","Pailitas","Pelaya","Pueblo Bello","Río de Oro","La Paz","San Alberto","San Diego","San Martín","Tamalameque"],
+"Chocó":["Quibdó","Acandí","Alto Baudó","Atrato","Bagadó","Bahía Solano","Bajo Baudó","Bojayá","El Cantón del San Pablo","Carmen del Darién","Cértegui","Condoto","El Carmen de Atrato","El Litoral del San Juan","Istmina","Juradó","Lloró","Medio Atrato","Medio Baudó","Medio San Juan","Nóvita","Nuevo Belén de Bajirá","Nuquí","Río Iró","Río Quito","Riosucio","San José del Palmar","Sipí","Tadó","Unguía","Unión Panamericana"],
+"Córdoba":["Montería","Ayapel","Buenavista","Canalete","Cereté","Chimá","Chinú","Ciénaga de Oro","Cotorra","La Apartada","Lorica","Los Córdobas","Momil","Montelíbano","Moñitos","Planeta Rica","Pueblo Nuevo","Puerto Escondido","Puerto Libertador","Purísima de la Concepción","Sahagún","San Andrés de Sotavento","San Antero","San Bernardo del Viento","San Carlos","San José de Uré","San Pelayo","Tierralta","Tuchín","Valencia"],
+"Cundinamarca":["Agua de Dios","Albán","Anapoima","Anolaima","Arbeláez","Beltrán","Bituima","Bojacá","Cabrera","Cachipay","Cajicá","Caparrapí","Cáqueza","Carmen de Carupa","Chaguaní","Chía","Chipaque","Choachí","Chocontá","Cogua","Cota","Cucunubá","El Colegio","El Peñón","El Rosal","Facatativá","Fómeque","Fosca","Funza","Fúquene","Fusagasugá","Gachalá","Gachancipá","Gachetá","Gama","Girardot","Granada","Guachetá","Guaduas","Guasca","Guataquí","Guatavita","Guayabal de Síquima","Guayabetal","Gutiérrez","Jerusalén","Junín","La Calera","La Mesa","La Palma","La Peña","La Vega","Lenguazaque","Machetá","Madrid","Manta","Medina","Mosquera","Nariño","Nemocón","Nilo","Nimaima","Nocaima","Venecia","Pacho","Paime","Pandi","Paratebueno","Pasca","Puerto Salgar","Pulí","Quebradanegra","Quetame","Quipile","Apulo","Ricaurte","San Antonio del Tequendama","San Bernardo","San Cayetano","San Francisco","San Juan de Rioseco","Sasaima","Sesquilé","Sibaté","Silvania","Simijaca","Soacha","Sopó","Subachoque","Suesca","Supatá","Susa","Sutatausa","Tabio","Tausa","Tena","Tenjo","Tibacuy","Tibirita","Tocaima","Tocancipá","Topaipí","Ubalá","Ubaque","Villa de San Diego de Ubaté","Une","Útica","Vergara","Vianí","Villagómez","Villapinzón","Villeta","Viotá","Yacopí","Zipacón","Zipaquirá"],
+"Guainía":["Inírida","Barrancóminas","San Felipe","Puerto Colombia","La Guadalupe","Cacahual","Pana Pana","Morichal"],
+"Guaviare":["San José del Guaviare","Calamar","El Retorno","Miraflores"],
+"Huila":["Neiva","Acevedo","Agrado","Aipe","Algeciras","Altamira","Baraya","Campoalegre","Colombia","Elías","Garzón","Gigante","Guadalupe","Hobo","Íquira","Isnos","La Argentina","La Plata","Nátaga","Oporapa","Paicol","Palermo","Palestina","Pital","Pitalito","Rivera","Saladoblanco","San Agustín","Santa María","Suaza","Tarqui","Tesalia","Tello","Teruel","Timaná","Villavieja","Yaguará"],
+"La Guajira":["Riohacha","Albania","Barrancas","Dibulla","Distracción","El Molino","Fonseca","Hatonuevo","La Jagua del Pilar","Maicao","Manaure","San Juan del Cesar","Uribia","Urumita","Villanueva"],
+"Magdalena":["Santa Marta","Algarrobo","Aracataca","Ariguaní","Cerro de San Antonio","Chivolo","Ciénaga","Concordia","El Banco","El Piñón","El Retén","Fundación","Guamal","Nueva Granada","Pedraza","Pijiño del Carmen","Pivijay","Plato","Puebloviejo","Remolino","Sabanas de San Ángel","Salamina","San Sebastián de Buenavista","San Zenón","Santa Ana","Santa Bárbara de Pinto","Sitionuevo","Tenerife","Zapayán","Zona Bananera"],
+"Meta":["Villavicencio","Acacías","Barranca de Upía","Cabuyaro","Castilla la Nueva","Cubarral","Cumaral","El Calvario","El Castillo","El Dorado","Fuente de Oro","Granada","Guamal","Mapirípán","Mesetas","La Macarena","Uribe","Lejanías","Puerto Concordia","Puerto Gaitán","Puerto López","Puerto Lleras","Puerto Rico","Restrepo","San Carlos de Guaroa","San Juan de Arama","San Juanito","San Martín","Vistahermosa"],
+"Nariño":["Pasto","Albán","Aldana","Ancuyá","Arboleda","Barbacoas","Belén","Buesaco","Colón","Consacá","Contadero","Córdoba","Cuaspud Carlosama","Cumbal","Cumbitara","Chachagüí","El Charco","El Peñol","El Rosario","El Tablón de Gómez","El Tambo","Funes","Guachucal","Guaitarilla","Gualmatán","Iles","Imués","Ipiales","La Cruz","La Florida","La Llanada","La Tola","La Unión","Leiva","Linares","Los Andes","Magüí","Mallama","Mosquera","Nariño","Olaya Herrera","Ospina","Francisco Pizarro","Policarpa","Potosí","Providencia","Puerres","Pupiales","Ricaurte","Roberto Payán","Samaniego","Sandoná","San Bernardo","San Lorenzo","San Pablo","San Pedro de Cartago","Santa Bárbara","Santacruz","Sapuyes","Taminango","Tangua","San Andrés de Tumaco","Túquerres","Yacuanquer"],
+"Norte de Santander":["San José de Cúcuta","Ábrego","Arboledas","Bochalema","Bucarasica","Cácota","Cáchira","Chinácota","Chitagá","Convención","Cucutilla","Durania","El Carmen","El Tarra","El Zulia","Gramalote","Hacarí","Herrán","Labateca","La Esperanza","La Playa","Los Patios","Lourdes","Mutiscua","Ocaña","Pamplona","Pamplonita","Puerto Santander","Ragonvalia","Salazar","San Calixto","San Cayetano","Santiago","Sardinata","Silos","Teorama","Tibú","Toledo","Villa Caro","Villa del Rosario"],
+"Putumayo":["Mocoa","Colón","Orito","Puerto Asís","Puerto Caicedo","Puerto Guzmán","Puerto Leguízamo","Sibundoy","San Francisco","San Miguel","Santiago","Valle del Guamuez","Villagarzón"],
+"Quindío":["Armenia","Buenavista","Calarcá","Circasia","Córdoba","Filandia","Génova","La Tebaida","Montenegro","Pijao","Quimbaya","Salento"],
+"Risaralda":["Pereira","Apía","Balboa","Belén de Umbría","Dosquebradas","Guática","La Celia","La Virginia","Marsella","Mistrató","Pueblo Rico","Quinchía","Santa Rosa de Cabal","Santuario"],
+"San Andrés y Providencia":["San Andrés","Providencia"],
+"Santander":["Bucaramanga","Aguada","Albania","Aratoca","Barbosa","Barichara","Barrancabermeja","Betulia","Bolívar","Cabrera","California","Capitanejo","Carcasí","Cepitá","Cerrito","Charalá","Charta","Chima","Chipatá","Cimitarra","Concepción","Confines","Contratación","Coromoro","Curití","El Carmen de Chucurí","El Guacamayo","El Peñón","El Playón","Encino","Enciso","Florián","Floridablanca","Galán","Gámbita","Girón","Guaca","Guadalupe","Guapotá","Guavatá","Güepsa","Hato","Jesús María","Jordán","La Belleza","Landázuri","La Paz","Lebrija","Los Santos","Macaravita","Málaga","Matanza","Mogotes","Molagavita","Ocamonte","Oiba","Onzaga","Palmar","Palmas del Socorro","Páramo","Piedecuesta","Pinchote","Puente Nacional","Puerto Parra","Puerto Wilches","Rionegro","Sabana de Torres","San Andrés","San Benito","San Gil","San Joaquín","San José de Miranda","San Miguel","San Vicente de Chucurí","Santa Bárbara","Santa Helena del Opón","Simacota","Socorro","Suaita","Sucre","Suratá","Tona","Valle de San José","Vélez","Vetas","Villanueva","Zapatoca"],
+"Sucre":["Sincelejo","Buenavista","Caimito","Colosó","Corozal","Coveñas","Chalán","El Roble","Galeras","Guaranda","La Unión","Los Palmitos","Majagual","Morroa","Ovejas","Palmito","Sampués","San Benito Abad","San Juan de Betulia","San Marcos","San Onofre","San Pedro","San Luis de Sincé","Sucre","Santiago de Tolú","San José de Toluviejo"],
+"Tolima":["Ibagué","Alpujarra","Alvarado","Ambalema","Anzoátegui","Armero","Ataco","Cajamarca","Carmen de Apicalá","Casabianca","Chaparral","Coello","Coyaima","Cunday","Dolores","Espinal","Falan","Flandes","Fresno","Guamo","Herveo","Honda","Icononzo","Lérida","Líbano","San Sebastián de Mariquita","Melgar","Murillo","Natagaima","Ortega","Palocabildo","Piedras","Planadas","Prado","Purificación","Rioblanco","Roncesvalles","Rovira","Saldaña","San Antonio","San Luis","Santa Isabel","Suárez","Valle de San Juan","Venadillo","Villahermosa","Villarrica"],
+"Valle del Cauca":["Santiago de Cali","Alcalá","Andalucía","Ansermanuevo","Argelia","Bolívar","Buenaventura","Guadalajara de Buga","Bugalagrande","Caicedonia","Calima","Candelaria","Cartago","Dagua","El Águila","El Cairo","El Cerrito","El Dovio","Florida","Ginebra","Guacarí","Jamundí","La Cumbre","La Unión","La Victoria","Obando","Palmira","Pradera","Restrepo","Riofrío","Roldanillo","San Pedro","Sevilla","Toro","Trujillo","Tuluá","Ulloa","Versalles","Vijes","Yotoco","Yumbo","Zarzal"],
+"Vaupés":["Mitú","Carurú","Pacoa","Taraira","Papunaua","Yavaraté"],
+"Vichada":["Puerto Carreño","La Primavera","Santa Rosalía","Cumaribo"]
+};
+
+// Estado
+let munSelResidencia=null,munListaResidencia=[],munSelBach=null,munListaBach=[];
+const TOTAL_SECS=7;
+
+// ── Likert data ──────────────────────────────
+const LK_DATA={
+  19:[
+    "¿Crees que la experiencia internacional ha ampliado sus horizontes académicos y profesionales?",
+    "¿Considera que las habilidades adquiridas a través de la internacionalización son relevantes en el mercado laboral actual?",
+    "¿Siente que la internacionalización del programa ha contribuido a su desarrollo profesional?",
+    "¿El programa adopta rutas de formación alternativas a partir de las necesidades e intereses de los estudiantes?",
+    "¿Crees que el programa te ha preparado académicamente para enfrentar los desafíos en su campo laboral?",
+    "¿Considera que las competencias adquiridas durante su formación académica son relevantes en su carrera profesional?",
+    "¿Cómo calificarías la adecuación del perfil de formación a las demandas del mercado laboral actual?"
+  ],
+  20:[
+    "Había oportunidades para intercambios internacionales y movilidad estudiantil",
+    "El programa ayudó a desarrollar habilidades blandas como liderazgo, trabajo en equipo y comunicación",
+    "Calidad de los contenidos de los cursos del programa académico",
+    "La calidad de la enseñanza impartida por los profesores",
+    "Disponibilidad de tutorías u otras ayudas",
+    "Flexibilidad de horarios dentro de su programa académico",
+    "Acompañamiento para la búsqueda de oportunidades laborales",
+    "El programa incluía experiencias prácticas y aplicadas",
+    "Oportunidades de participar en actividades extracurriculares",
+    "Oportunidades de participar en proyectos de investigación y desarrollo",
+    "Plan de estudios diseñado con base en las demandas y tendencias del mercado laboral",
+    "Profesores altamente calificados y expertos en las áreas"
+  ],
+  21:[
+    "Servicios de apoyo psicológico y emocional ofrecidos por la universidad",
+    "Servicios de asesoramiento académico y profesional brindados por la universidad",
+    "Servicios de salud (enfermería, atención de emergencias) proporcionados por la universidad",
+    "Servicios para actividades recreativas, deportivas y culturales"
+  ],
+  22:[
+    "Infraestructura de laboratorios idónea y equipos bien equipados y actualizados",
+    "Instalaciones apropiadas para realizar actividades artísticas/culturales",
+    "Infraestructura para practicar deportes o actividades recreacionales",
+    "Recursos bibliográficos e infraestructura de la biblioteca",
+    "Disponibilidad de recursos audiovisuales y de comunicación",
+    "Escenarios de aprendizaje diversos y aplicados para el área de formación",
+    "Aulas de informática adecuadas y bien equipadas",
+    "Salones de clase amplios y adecuados"
+  ],
+  23:[
+    "Manejo eficiente y eficaz de la información",
+    "Tecnologías de la Información y Comunicación (TIC)",
+    "Capacidad para aplicar conocimientos técnicos y científicos en la resolución de problemas complejos",
+    "Capacidad de actualización, construcción y uso de nuevos conocimientos",
+    "Capacidad de reconocer y respetar las diferencias y de contribuir a la convivencia ciudadana",
+    "Habilidad para trabajar en equipos multidisciplinarios, fomentando liderazgo compartido",
+    "Ejecuta ensayos y pruebas según norma, interpreta resultados y elabora informes técnicos",
+    "Interpreta planos y especificaciones, apoya la coordinación y supervisión de procesos constructivos",
+    "Competencia para adquirir y aplicar nuevos conocimientos usando estrategias de aprendizaje",
+    "Se comunica de manera clara e inclusiva utilizando diversos medios",
+    "Asegura el cumplimiento de todos los requisitos legales, reglamentarios y culturales",
+    "Analiza de manera exhaustiva los efectos económicos, sociales y ambientales previsibles"
+  ]
+};
+
+// ── Build Likert tables ──────────────────────
+function buildLikert(){
+  [19,20,21,22,23].forEach(n=>{
+    const tbody=document.getElementById('lk'+n+'-body');
+    if(!tbody)return;
+    LK_DATA[n].forEach((label,i)=>{
+      const tr=document.createElement('tr');
+      let cells=`<td>${label}</td>`;
+      [1,2,3,4,5].forEach(v=>{
+        cells+=`<td><input type="radio" name="lk${n}_${i}" value="${v}"></td>`;
+      });
+      tr.innerHTML=cells;
+      tbody.appendChild(tr);
+    });
+  });
+}
+
+// ── Init departamentos selects ───────────────
+function initDeptos(){
+  ['q-depto','q-depto-bach'].forEach(id=>{
+    const sel=document.getElementById(id);
+    if(!sel)return;
+    Object.keys(DEPTOS_MUNS).sort().forEach(d=>{
+      const o=document.createElement('option');
+      o.value=d;o.textContent=d;
+      sel.appendChild(o);
+    });
+  });
+}
+
+// ── Init wizard steps ────────────────────────
+function initSteps(){
+  const cont=document.getElementById('prog-steps');
+  const labels=['Personal','Ubicación','Formación','Satisfacción','Laboral','Trayectoria','Impacto'];
+  labels.forEach((l,i)=>{
+    if(i>0){
+      const line=document.createElement('div');
+      line.className='step-line';
+      line.id='line-'+(i+1);
+      cont.appendChild(line);
+    }
+    const dot=document.createElement('div');
+    dot.className='step-dot'+(i===0?' active':'');
+    dot.id='dot-'+(i+1);
+    dot.innerHTML=`<div class="step-num">${i+1}</div><div class="step-lbl">${l}</div>`;
+    cont.appendChild(dot);
+  });
+}
+
+// ── Radio helper ─────────────────────────────
+function selRad(lbl,groupId){
+  document.querySelectorAll(`#${groupId} .opt`).forEach(l=>l.classList.remove('chk'));
+  lbl.classList.add('chk');
+}
+
+function getRad(name){
+  const el=document.querySelector(`input[name="${name}"]:checked`);
+  return el?el.value:'';
+}
+
+// ── Condicionales ────────────────────────────
+function toggleDepto(val){
+  document.getElementById('bloque-depto').style.display=val==='Colombia'?'block':'none';
+}
+function toggleIdioma(val){
+  document.getElementById('bloque-idioma').style.display=val==='Si'?'block':'none';
+}
+function toggleEmpleo(val){
+  document.getElementById('bloque-empresa').style.display=val==='Si'?'block':'none';
+  document.getElementById('bloque-no-empleo').style.display=val==='No'?'block':'none';
+}
+function toggleSector(val){
+  ['primario','industria','comercio','servicios'].forEach(s=>{
+    document.getElementById('sub-'+s).style.display=s===val?'block':'none';
+  });
+}
+function toggleEstudiosAd(val){
+  document.getElementById('bloque-cuales-estudios').style.display=val==='Si'?'block':'none';
+}
+function toggleContrib(val){
+  document.getElementById('bloque-contrib-desc').style.display=val==='Si'?'block':'none';
+}
+function toggleInnov(val){
+  document.getElementById('bloque-innov-desc').style.display=val==='Si'?'block':'none';
+}
+function toggleDist(val){
+  document.getElementById('bloque-dist-desc').style.display=val==='Si'?'block':'none';
+}
+
+// ── Municipios ───────────────────────────────
+function cargarMunicipios(selId,gridId,searchId,tagId,tagNomId,bloqueId,munStateVar){
+  const dep=document.getElementById(selId).value;
+  const bloque=document.getElementById(bloqueId);
+  document.getElementById(searchId).value='';
+  document.getElementById(tagId).classList.remove('show');
+  if(munStateVar==='munSelResidencia')munSelResidencia=null;
+  else munSelBach=null;
+
+  if(!dep){bloque.style.display='none';return;}
+
+  const lista=DEPTOS_MUNS[dep]||[];
+  if(munStateVar==='munSelResidencia')munListaResidencia=[...lista];
+  else munListaBach=[...lista];
+
+  bloque.style.display='block';
+  renderChips(lista,gridId,tagId,tagNomId,munStateVar);
+}
+
+function renderChips(lista,gridId,tagId,tagNomId,msv){
+  const grid=document.getElementById(gridId);
+  grid.innerHTML='';
+  const sel=msv==='munSelResidencia'?munSelResidencia:munSelBach;
+  lista.forEach(m=>{
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='mun-chip'+(m===sel?' active':'');
+    btn.textContent=m;
+    btn.onclick=()=>selMun(m,gridId,tagId,tagNomId,msv);
+    grid.appendChild(btn);
+  });
+}
+
+function selMun(m,gridId,tagId,tagNomId,msv){
+  if(msv==='munSelResidencia')munSelResidencia=m;
+  else munSelBach=m;
+  document.getElementById(tagNomId).textContent=m;
+  document.getElementById(tagId).classList.add('show');
+  const lista=msv==='munSelResidencia'?munListaResidencia:munListaBach;
+  const q=document.getElementById(msv==='munSelResidencia'?'q-municipio-search':'q-mun-bach-search').value.toLowerCase();
+  renderChips(lista.filter(x=>x.toLowerCase().includes(q)),gridId,tagId,tagNomId,msv);
+}
+
+function filtrarMun(searchId,gridId,msv,lista){
+  const q=document.getElementById(searchId).value.toLowerCase();
+  const tagId=msv==='munSelResidencia'?'q-municipio-tag':'q-mun-bach-tag';
+  const tagNomId=msv==='munSelResidencia'?'q-municipio-tag-nombre':'q-mun-bach-tag-nombre';
+  renderChips((lista||[]).filter(m=>m.toLowerCase().includes(q)),gridId,tagId,tagNomId,msv);
+}
+
+// ── Progress ─────────────────────────────────
+function updateProgress(sec){
+  const pct=Math.round(((sec-1)/TOTAL_SECS)*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('prog-sec-label').textContent='Sección '+sec+' de '+TOTAL_SECS;
+  for(let i=1;i<=TOTAL_SECS;i++){
+    const dot=document.getElementById('dot-'+i);
+    const line=document.getElementById('line-'+i);
+    if(!dot)continue;
+    dot.className='step-dot'+(i===sec?' active':i<sec?' done':'');
+    if(line)line.className='step-line'+(i<=sec?' done':'');
+  }
+}
+
+// ── Navegación ───────────────────────────────
+function showSec(n){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+n).classList.add('active');
+  updateProgress(n);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function prevSec(current){showSec(current-1);}
+
+// Validaciones por sección
+function validarSec(n){
+  let ok=true;
+  function chk(errId,cond){
+    const el=document.getElementById(errId);
+    if(el){if(!cond){el.classList.add('show');ok=false;}else el.classList.remove('show');}
+  }
+  if(n===1){
+    chk('e-correo',/\S+@\S+\.\S+/.test(document.getElementById('q-correo').value));
+    chk('e-nombre',document.getElementById('q-nombre').value.trim().length>1);
+    chk('e-tel',document.getElementById('q-tel').value.trim().length>5);
+    chk('e-edad',!!getRad('edad'));
+    chk('e-genero',!!getRad('genero'));
+    chk('e-etnia',!!getRad('etnia'));
+  }
+  if(n===2){
+    chk('e-pais',!!getRad('pais'));
+    const paisVal=getRad('pais');
+    if(paisVal==='Colombia'){
+      chk('e-depto',!!document.getElementById('q-depto').value);
+      chk('e-municipio',!!munSelResidencia);
+    }
+    chk('e-anio',document.getElementById('q-anio').value.trim().length>=4);
+    chk('e-idioma',!!getRad('idioma'));
+  }
+  if(n===3){
+    chk('e-edad-bach',!!getRad('edad-bach'));
+    chk('e-mun-bach',!!munSelBach);
+    chk('e-tipo-inst',!!document.getElementById('q-tipo-inst').value);
+    chk('e-estrato-ant',!!getRad('estrato-ant'));
+    chk('e-ingreso-ant',!!getRad('ingreso-ant'));
+    chk('e-factores',!!getRad('factores'));
+  }
+  if(n===4){
+    [19,20,21,22,23].forEach(q=>{
+      const items=LK_DATA[q];
+      let allOk=true;
+      items.forEach((_,i)=>{if(!getRad('lk'+q+'_'+i))allOk=false;});
+      chk('e-likert-'+q,allOk);
+    });
+    chk('e-mejor-prep',!!getRad('mejor-prep'));
+  }
+  if(n===5){
+    chk('e-empleado',!!getRad('empleado'));
+    if(getRad('empleado')==='Sí'){
+      chk('e-sector',!!getRad('sector'));
+      chk('e-posicion',!!getRad('posicion'));
+      chk('e-contrato',!!getRad('contrato'));
+      chk('e-relacion',!!getRad('relacion'));
+    }
+  }
+  if(n===6){
+    chk('e-tiempo-primer',!!getRad('tiempo-primer'));
+    chk('e-exp-general',!!getRad('exp-general'));
+    chk('e-exp-area',!!getRad('exp-area'));
+    chk('e-estudios-add',!!getRad('estudios-add'));
+    chk('e-ingresos',!!getRad('ingresos'));
+    chk('e-vivienda',!!getRad('vivienda'));
+  }
+  if(n===7){
+    chk('e-contribucion',!!getRad('contribucion'));
+    chk('e-innovacion',!!getRad('innovacion'));
+    chk('e-distincion',!!getRad('distincion'));
+    chk('e-posibilidades',!!getRad('posibilidades'));
+    chk('e-recomienda',!!getRad('recomienda'));
+    chk('e-recomendacion',document.getElementById('q-recomendacion').value.trim().length>5);
+  }
+  if(!ok){
+    const firstErr=document.querySelector('#sec-'+n+' .qerr.show');
+    if(firstErr)firstErr.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  return ok;
+}
+
+function nextSec(current){
+  if(!validarSec(current))return;
+  if(current<TOTAL_SECS)showSec(current+1);
+}
+
+// ── Envío final ──────────────────────────────
+function getLikertData(q){
+  const res={};
+  LK_DATA[q].forEach((label,i)=>{
+    res[label.substring(0,40)+'…']=getRad('lk'+q+'_'+i);
+  });
+  return res;
+}
+
+function enviar(){
+  if(!validarSec(7))return;
+  document.getElementById('btn-txt').style.display='none';
+  document.getElementById('spinner').style.display='block';
+  document.getElementById('btn-enviar').disabled=true;
+
+  const genOtro=document.getElementById('genero-otro').value;
+  const datos={
+    Timestamp:new Date().toLocaleString('es-CO'),
+    Correo:document.getElementById('q-correo').value,
+    Nombre:document.getElementById('q-nombre').value,
+    Telefono:document.getElementById('q-tel').value,
+    Edad:getRad('edad'),
+    Genero:getRad('genero')==='Otro'&&genOtro?'Otro: '+genOtro:getRad('genero'),
+    Etnia:getRad('etnia'),
+    Pais:getRad('pais')==='Otro'?'Otro: '+document.getElementById('pais-otro').value:getRad('pais'),
+    Departamento:document.getElementById('q-depto').value,
+    Municipio:munSelResidencia,
+    AnioGraduacion:document.getElementById('q-anio').value,
+    DominaOtroIdioma:getRad('idioma'),
+    CualIdioma:getRad('cual-idioma'),
+    EdadBachillerato:getRad('edad-bach'),
+    MunicipioEstudiosBach:munSelBach,
+    TipoInstEducMedia:document.getElementById('q-tipo-inst').value,
+    EstratoAntes:getRad('estrato-ant'),
+    IngresoFamiliarAntes:getRad('ingreso-ant'),
+    FactoresEleccion:getRad('factores'),
+    Financiacion:getRad('financiacion'),
+    Likert_Curriculo:JSON.stringify(getLikertData(19)),
+    Likert_FormacionAcademica:JSON.stringify(getLikertData(20)),
+    Likert_Bienestar:JSON.stringify(getLikertData(21)),
+    Likert_Recursos:JSON.stringify(getLikertData(22)),
+    Likert_Competencias:JSON.stringify(getLikertData(23)),
+    MejorPreparado:getRad('mejor-prep'),
+    Empleado:getRad('empleado'),
+    NombreEmpresa:document.getElementById('q-empresa').value,
+    DireccionEmpresa:document.getElementById('q-dir-empresa').value,
+    CorreoJefe:document.getElementById('q-correo-jefe').value,
+    TipoEmpresa:getRad('tipo-empresa'),
+    SectorEconomico:getRad('sector'),
+    Subsector:getRad('sub-primario')||getRad('sub-industria')||getRad('sub-comercio')||getRad('sub-servicios'),
+    Posicion:getRad('posicion'),
+    TipoContrato:getRad('contrato'),
+    RelacionConCarrera:getRad('relacion'),
+    SituacionSinEmpleo:getRad('sin-empleo'),
+    DificultadEmpleo:getRad('dificultad'),
+    TiempoHastaPrimerEmpleo:getRad('tiempo-primer'),
+    ExperienciaGeneral:getRad('exp-general'),
+    ExperienciaEnArea:getRad('exp-area'),
+    MedioEfectivoEmpleo:getRad('medio-empleo'),
+    EstudiosAdicionales:getRad('estudios-add'),
+    CualesEstudios:getRad('cuales-estudios'),
+    RangoIngresos:getRad('ingresos'),
+    TipoVivienda:getRad('vivienda'),
+    EstratoActual:getRad('estrato-act'),
+    ContribucionDesarrollo:getRad('contribucion'),
+    DescContribucion:document.getElementById('q-contrib-desc').value,
+    AportesInnovacion:getRad('innovacion'),
+    DescAportesInnovacion:document.getElementById('q-innov-desc').value,
+    Distincion:getRad('distincion'),
+    DescDistincion:document.getElementById('q-dist-desc').value,
+    PosibilidadesLaborales:getRad('posibilidades'),
+    Recomienda:getRad('recomienda'),
+    Recomendacion:document.getElementById('q-recomendacion').value
+  };
+
+  // ── REEMPLAZA ESTA URL ──
+  const APPS_SCRIPT_URL='TU_URL_APPS_SCRIPT_AQUI';
+
+  if(APPS_SCRIPT_URL==='TU_URL_APPS_SCRIPT_AQUI'){
+    setTimeout(()=>mostrarExito(),1400);
+    return;
+  }
+
+  fetch(APPS_SCRIPT_URL,{
+    method:'POST',mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(datos)
+  }).then(()=>mostrarExito()).catch(()=>mostrarExito());
+}
+
+function mostrarExito(){
+  document.getElementById('main-wrap').style.display='none';
+  document.getElementById('success-panel').classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Bootstrap ────────────────────────────────
+window.onload=()=>{
+  initSteps();
+  initDeptos();
+  buildLikert();
+  updateProgress(1);
+};
+</script>
+</body>
+</html>
