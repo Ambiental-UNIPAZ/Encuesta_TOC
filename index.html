@@ -1268,6 +1268,14 @@ function getLikertData(q){
   });
   return res;
 }
+function aplanarLikert(q, prefijo) {
+  const resultado = {};
+  LK_DATA[q].forEach((label, i) => {
+    const clave = prefijo + '_Item' + (i + 1);
+    resultado[clave] = getRad('lk' + q + '_' + i);
+  });
+  return resultado;
+}
 
 function enviar(){
   if(!validarSec(7))return;
@@ -1297,11 +1305,11 @@ function enviar(){
     IngresoFamiliarAntes:getRad('ingreso-ant'),
     FactoresEleccion:getRad('factores'),
     Financiacion:getRad('financiacion'),
-    Likert_Curriculo:JSON.stringify(getLikertData(19)),
-    Likert_FormacionAcademica:JSON.stringify(getLikertData(20)),
-    Likert_Bienestar:JSON.stringify(getLikertData(21)),
-    Likert_Recursos:JSON.stringify(getLikertData(22)),
-    Likert_Competencias:JSON.stringify(getLikertData(23)),
+...aplanarLikert(19,'Curriculo'),
+...aplanarLikert(20,'Formacion'),
+...aplanarLikert(21,'Bienestar'),
+...aplanarLikert(22,'Recursos'),
+...aplanarLikert(23,'Competencias'),
     MejorPreparado:getRad('mejor-prep'),
     Empleado:getRad('empleado'),
     NombreEmpresa:document.getElementById('q-empresa').value,
