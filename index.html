@@ -1300,10 +1300,10 @@ function enviar(){
   const genOtro=document.getElementById('genero-otro').value;
   const datos={
     Timestamp:new Date().toLocaleString('es-CO'),
-    Correoper:document.getElementById('q-correoper').value,
-    Correoins:document.getElementById('q-correoins').value,
-    Nombre:document.getElementById('q-nombre').value,
-    Apellido:document.getElementById('q-apellido').value,
+    Correoper:document.getElementById('q-correoper')?.value,
+    Correoins:document.getElementById('q-correoins')?.value,
+    Nombre:document.getElementById('q-nombre')?.value,
+    Apellido:document.getElementById('q-apellido')?.value,
     Telefono:document.getElementById('q-tel').value,
     Edad:getRad('edad'),
     Genero:getRad('genero')==='Otro'&&genOtro?'Otro: '+genOtro:getRad('genero'),
