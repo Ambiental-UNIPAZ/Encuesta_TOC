@@ -197,7 +197,7 @@ textarea.qi{resize:vertical;min-height:90px}
   </div> 
 
   <div class="qcard">
-    <div class="qlabel"><span class="qnum">0.</span> Nombres completos <span class="req">*</span></div>
+    <div class="qlabel"><span class="qnum"></span> Nombres completos <span class="req">*</span></div>
     <input class="qi" type="text" id="q-nombre" placeholder="Nombres completos">
     <div class="qerr" id="e-nombre">Este campo es obligatorio.</div>
   </div>
@@ -1201,8 +1201,10 @@ function validarSec(n){
     if(el){if(!cond){el.classList.add('show');ok=false;}else el.classList.remove('show');}
   }
   if(n===1){
-    chk('e-correo',/\S+@\S+\.\S+/.test(document.getElementById('q-correo').value));
+    chk('e-correoper',/\S+@\S+\.\S+/.test(document.getElementById('q-correoper').value));
+    chk('e-correoins',/\S+@\S+\.\S+/.test(document.getElementById('q-correoins').value));
     chk('e-nombre',document.getElementById('q-nombre').value.trim().length>1);
+    chk('e-apellido',document.getElementById('q-apellido').value.trim().length>1);
     chk('e-tel',document.getElementById('q-tel').value.trim().length>5);
     chk('e-edad',!!getRad('edad'));
     chk('e-genero',!!getRad('genero'));
