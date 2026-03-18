@@ -185,15 +185,27 @@ textarea.qi{resize:vertical;min-height:90px}
   </div>
 
   <div class="qcard">
-    <div class="qlabel">Correo electrónico <span class="req">*</span></div>
-    <input class="qi" type="email" id="q-correo" placeholder="ejemplo@correo.com">
-    <div class="qerr" id="e-correo">Ingresa un correo electrónico válido.</div>
+    <div class="qlabel">Correo electrónico personal <span class="req">*</span></div>
+    <input class="qi" type="email" id="q-correoper" placeholder="ejemplo@correo.com">
+    <div class="qerr" id="e-correoper">Ingresa un correo electrónico válido.</div>
+  </div>
+
+   <div class="qcard">
+    <div class="qlabel">Correo electrónico institucional <span class="req">*</span></div>
+    <input class="qi" type="email" id="q-correoins" placeholder="ejemplo@correo.com">
+    <div class="qerr" id="e-correoins">Ingresa un correo electrónico válido.</div>
+  </div> 
+
+  <div class="qcard">
+    <div class="qlabel"><span class="qnum">0.</span> Nombres completos <span class="req">*</span></div>
+    <input class="qi" type="text" id="q-nombre" placeholder="Nombres completos">
+    <div class="qerr" id="e-nombre">Este campo es obligatorio.</div>
   </div>
 
   <div class="qcard">
-    <div class="qlabel"><span class="qnum">1.</span> Nombres y apellidos <span class="req">*</span></div>
-    <input class="qi" type="text" id="q-nombre" placeholder="Nombre completo">
-    <div class="qerr" id="e-nombre">Este campo es obligatorio.</div>
+    <div class="qlabel"><span class="qnum">1.</span> Apellidos completos <span class="req">*</span></div>
+    <input class="qi" type="text" id="q-apellido" placeholder="Apellidos completos">
+    <div class="qerr" id="e-apellido">Este campo es obligatorio.</div>
   </div>
 
   <div class="qcard">
@@ -1286,8 +1298,10 @@ function enviar(){
   const genOtro=document.getElementById('genero-otro').value;
   const datos={
     Timestamp:new Date().toLocaleString('es-CO'),
-    Correo:document.getElementById('q-correo').value,
+    Correoper:document.getElementById('q-correoper').value,
+    Correoins:document.getElementById('q-q-correoins').value,
     Nombre:document.getElementById('q-nombre').value,
+    Apellido:document.getElementById('q-apellido').value,
     Telefono:document.getElementById('q-tel').value,
     Edad:getRad('edad'),
     Genero:getRad('genero')==='Otro'&&genOtro?'Otro: '+genOtro:getRad('genero'),
